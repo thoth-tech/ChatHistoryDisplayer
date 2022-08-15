@@ -9,16 +9,10 @@ require "json"
 #User defined classes/Gems
 require "./generator.rb"
 require "./util.rb"
-#Working directory
-$working_dir = Dir.pwd
 
 #Initializing a Git repo
 # logger = Logger.new(STDOUT)
-# g = Git.init
-#     Git.init('test')
-#     Git.init("#$working_dir/test",
-#         { :repository => "#$working_dir/test/proj.git",
-#             :index => "#$working_dir/test/index"} )
+
 
 
 # HTTP Response boilerplate
@@ -46,9 +40,16 @@ get '/test' do
 
 end
 
-get '/init' do
-    puts "initialising Git repo"
-    GitGenerator.init()
+get '/init/:uid' do |uid|
+    resp = GitGenerator.init(uid)
+    case resp
+    when true
+        Response.generic("200", "Created a git repo for #{uid}")
+    when false 
+        Response.generic("401", "Repo already exists for #{uid}")
+    else 
+        Response.generic("501", "Unknown error. Check server logs")
+    end
 end
 
 get '/:uid' do |uid|
@@ -60,4 +61,10 @@ post '/:uid' do |uid|
     puts 'posting a file to ' + uid + " repo"
     file = "fileHERE"
     GitGenerator.postTo(uid, file)
+end
+
+delete '/:uid' do |uid|
+    puts 'Deleting repo for ' + uid
+    # Delete code
+    Response.generic("200", "Deleted file")
 end
