@@ -32,3 +32,5 @@ To run the server, simply enter `rerun 'ruby main.rb'` into the terminal in the 
 Navigate to `localhost:4567` on a web brower to see the server running.
 
 You'll want to install a tool like [Postman](https://www.postman.com/) to invoke all of the methods in the emulator or use command line tools like [curl](https://curl.se/)
+
+A postman workspace json is included if you wish to use that. Simply open the file using Postman 

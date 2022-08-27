@@ -59,12 +59,24 @@ end
 
 post '/:uid' do |uid|
     puts 'posting a file to ' + uid + " repo"
-    file = "fileHERE"
-    GitGenerator.postTo(uid, file)
+    request.body.rewind
+    data = JSON.parse(request.body.read)
+    GitGenerator.postTo(uid, data["file"], data["commitMsg"])
 end
 
 delete '/:uid' do |uid|
     puts 'Deleting repo for ' + uid
     # Delete code
     Response.generic("200", "Deleted file")
+end
+
+get '/diff/:uid/:file' do |uid, file|
+    resp = JSON.parse(GitGenerator.getDif(uid, file))
+    
+    case resp["Found"]
+    when true
+        Response.generic("200", resp["sha"])
+    when false
+        Response.generic("404", "null")
+    end
 end
