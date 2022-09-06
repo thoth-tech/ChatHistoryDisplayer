@@ -4,20 +4,23 @@ require "git"
 require "dir"
 require "logger"
 require "sinatra"
+require "sinatra/cross_origin"
 require "json"
 
 #User defined classes/Gems
 require "./generator.rb"
 require "./util.rb"
 
-#Initializing a Git repo
-# logger = Logger.new(STDOUT)
-
-
-
 # HTTP Response boilerplate
+set :bind, '0.0.0.0'
+
+configure do
+    enable :cross_origin
+end
+
 before do
     content_type :json
+    response.headers['Access-Control-Allow-Origin'] = '*'
 end
 
 # REST API METHODS HERE
@@ -57,13 +60,15 @@ get '/:uid' do |uid|
     GitGenerator.retrieve(uid)
 end
 
+# Submit a file for a user
 post '/:uid' do |uid|
     puts 'posting a file to ' + uid + " repo"
     request.body.rewind
     data = JSON.parse(request.body.read)
-    GitGenerator.postTo(uid, data["file"], data["commitMsg"])
+    GitGenerator.postTo(uid, data["fileName"], data["file"], data["commitMsg"])
 end
 
+# Delete a file for a user
 delete '/:uid' do |uid|
     puts 'Deleting repo for ' + uid
     # Delete code
@@ -79,4 +84,11 @@ get '/diff/:uid/:file' do |uid, file|
     when false
         Response.generic("404", "null")
     end
+end
+
+# HTTP Response boilerplate
+
+options "*" do
+    response.headers["ALLOW"] = "GET, PUT, POST, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, Accept, X-User-Email, X-Auth-Token"
 end

@@ -22,13 +22,15 @@ class GitGenerator
         if !Dir.exist?($path) 
             Dir.mkdir($path)
         end
-        if Dir.exist?($path+"/#{uid}")
+        if Dir.exist?($path+"/#{uid}") == false
             Dir.mkdir($path+"/#{uid}")
+            g = Git.init("#$path/#{uid}",
+                { :repository => "#$path/#{uid}/proj.git",
+                    :index => "#$path/#{uid}/index"} )
+            return true
+        else
+            return false
         end
-        g = Git.init("#$path/#{uid}",
-            { :repository => "#$path/#{uid}/proj.git",
-                :index => "#$path/#{uid}/index"} )
-        return true
     end
 
     def self.retrieve(uid)
@@ -36,20 +38,20 @@ class GitGenerator
     end
 
     #Add the files to a repo with a commit message
-    def self.postTo(uid, file, commitMsg)
+    def self.postTo(uid, fileName, fileBody, commitMsg)
         if !Dir.exist?($path)
             Dir.mkdir($path)
         end
-        # Creating a test file to add 
-        File.open("#$path/#{uid}/test.txt", "w") do |f|
-            f.write(file)
+        # Creating the file
+        File.open("#$path/#{uid}/#{fileName}.txt", "w") do |f|
+            f.write(fileBody)
         end
         # Adding all files into the Git
         g = Git.open("#$path", repository:"#$path/#{uid}/proj.git")
         g.add
         g.commit(commitMsg)
 
-        return "posting the attached file for uid " + uid
+        return "commited the attached file " + fileName + " to " + uid
     end
 
     #Get the diff for a file, need to enumerate through commits until a diff is found. return false if no diff is found return true with the commit SHA if a dif was found
@@ -57,7 +59,7 @@ class GitGenerator
         g = Git.open("#$path", repository:"#$path/#{uid}/proj.git")
         commits = g.log
         idx = 0
-        #Hacking solution to get the count. There must be a better way!
+        #Hacky solution to get the count. There must be a better way!
         commits.each do |c|
             idx += 1
         end

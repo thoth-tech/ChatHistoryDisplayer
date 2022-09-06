@@ -1,3 +1,4 @@
 emulator/repos/*
-
 test.rb
+frontEndSimulator/node_modules
+node_modules
