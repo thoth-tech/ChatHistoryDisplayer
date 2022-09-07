@@ -41,3 +41,9 @@ Navigate to `localhost:4567` on a web brower to see the server running.
 You'll want to install a tool like [Postman](https://www.postman.com/) to invoke all of the methods in the emulator or use command line tools like [curl](https://curl.se/)
 
 A postman workspace json is included if you wish to use that. Simply open the file using Postman 
+
+### A video demo
+
+This [video](./demoVid.mp4) demo demonstrates how the 2 systems interact with each other
+
+[Link](https://drive.google.com/file/d/1RmW_RmXUaENfiCkVrQTSJVl8b9A0joIn/view?usp=sharing) to it on Google Drive
