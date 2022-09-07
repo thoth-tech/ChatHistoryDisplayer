@@ -15,23 +15,26 @@ We want to view what files have already been submitted by students along with a 
 
  Below are the methods used by the emulator
 
+**HTTP GET /test**
+Checks that there is connectivity to the server. If you recieve no response then you don't have connectivity
 
-**HTTP POST /init**
-Initialises a git repo and returns the uid of that repo
-
-Body
-
-```
-{
-    [options]
-}
- ```
 Response
 ```
 {
-    respCode: 200|300|400|500
-    Message: string
-    uid: string
+    "Code" : "200",
+    "Message": "Positive Outcome"
+}
+
+```
+
+**HTTP GET /init**
+Initialises a git repo and returns the uid of that repo
+
+Response
+```
+{
+    "respCode": 200|401|501
+    "Message": string
 }
 ```
 
@@ -41,8 +44,8 @@ Retrieve an entire git repo for a given `uid`
 Reponse
 ```
 {
-    respCode: 200|300|400|500
-    repo: git
+    "respCode": 200|300|400|500
+    "repo": git
 }
 ```
 
@@ -52,8 +55,8 @@ Retrieve a specific file in a git repo for a given `uid`
 Response
 ```
 {
-    respCode: 200|300|400|500
-    file: File object
+    "respCode": 200|300|400|500
+    "file": File object
 }
 ```
 
@@ -63,17 +66,28 @@ Response
 Body
 ```
 {
-    file: File object
-    [options]
+    "file": "string",
+    "fileName":"string",
+    "commitMsg":string
 }
 ```
 Response
 ```
 {
-    respCode: 200|300|400|500
-    gitcommit: git commit id
+    "Code": 200|300|400|500
+    "Message": string
 }
 ```
+
+**HTTP get /diff/:uid/:file
+Retrieve the most recent commit that contains the searched for file
+
+Response 
+```
+{
+    "Code": 200|404,
+    "Message": string
+}
 
  ## Back-end Service
 

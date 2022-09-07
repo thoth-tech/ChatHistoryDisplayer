@@ -7,13 +7,20 @@ We will be utilising a ruby [library](https://github.com/ruby-git/ruby-git) to i
 
 We will create a working Proof of Concept (POC) in this repo before working on intergrating with the doubfire backend. 
 
-## [DESIGN.md](./DESIGN.md)
+## Backend Rest API [DESIGN.md](./DESIGN.md)
 
 A simple overview of the proposed solution
 
 ![image](./overview.png)
 
-# Getting the emulator running
+
+# Getting the Frontend running
+
+Read the [documenation](./frontEndSimulator/README.md) on dependencies and how to start the application
+
+The front end serves as a convinient way to see the responses served by the backend and is meant to simulate what the Ontrack Frontend will be doing. Alternatively you can load `Emulator.postman_collection.json` into [Postman](https://www.postman.com/) and interface with the API directly.
+
+# Getting the backend emulator running
 
 The emulator is a simple HTTP server running on [Sinatra](https://sinatrarb.com/), a Ruby server library. 
 
