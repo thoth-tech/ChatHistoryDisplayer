@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useTimeout } from "react"
 import axios from "axios"
 import "./styling/index.css"
 function App() {
@@ -28,6 +28,7 @@ function App() {
       setResp(JSON.stringify(response.data))
     })
   }
+
   return (
     <div className="App">
       <div className="c">
@@ -45,6 +46,18 @@ function App() {
               sendGet(`init/${initText}`)
               setUID(initText)
               setInitText("")
+              const obj = `
+              {
+                "requiredFiles":[
+                  {
+                    "file":"report.txt"
+                  },
+                  {
+                    "file":"summary.txt"
+                  }
+                ]
+              }`
+              sendPost(`requiredFiles/${initText}`, obj)
             }}>Initialise a repo</button>
         </div>
 

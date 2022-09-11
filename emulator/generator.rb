@@ -57,6 +57,12 @@ class GitGenerator
 
     #Get the diff for a file, need to enumerate through commits until a diff is found. return false if no diff is found return true with the commit SHA if a dif was found
     def self.getDif(uid, fileName)
+
+        #File is in current directory. No need to check diffs
+        if File.file?($path+"/#{uid}/#{fileName}")
+            return Response.diffOutcome(true, "File exists")
+        end
+
         g = Git.open("#$path", repository:"#$path/#{uid}/proj.git")
         commits = g.log
         idx = 0
