@@ -67,16 +67,16 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"commitMsg\": \"commit abc\",\n    \"file\": {\n        \"Hello\":\"ANGEL Die\",\n        \"fruit\":\"anz\"\n    }\n}"
+					"raw": "{\n    \"commitMsg\": \"commit abc\",\n    \"fileName\": \"testing\",\n    \"file\": \"RandomFile contents here. This would be a PDF\"\n}"
 				},
 				"url": {
-					"raw": "localhost:4567/cbas",
+					"raw": "localhost:4567/das",
 					"host": [
 						"localhost"
 					],
 					"port": "4567",
 					"path": [
-						"cbas"
+						"das"
 					]
 				}
 			},
@@ -97,6 +97,48 @@
 						"diff",
 						"cbas",
 						"test.txt"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set Required Files",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"requiredFiles\":[\n    {\n        \"file\": \"report.pdf\"\n    },\n    {\n        \"file\": \"summary.pdf\"\n    }\n]}"
+				},
+				"url": {
+					"raw": "localhost:4567/requiredFiles/mathewPerkins",
+					"host": [
+						"localhost"
+					],
+					"port": "4567",
+					"path": [
+						"requiredFiles",
+						"mathewPerkins"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Required Files",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:4567/requiredFiles/mathewPerkins",
+					"host": [
+						"localhost"
+					],
+					"port": "4567",
+					"path": [
+						"requiredFiles",
+						"mathewPerkins"
 					]
 				}
 			},
