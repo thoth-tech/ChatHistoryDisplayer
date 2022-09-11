@@ -86,8 +86,30 @@ get '/diff/:uid/:file' do |uid, file|
     end
 end
 
-# HTTP Response boilerplate
+post '/requiredFiles/:uid' do |uid|
+    request.body.rewind
+    data = JSON.parse(request.body.read)
 
+    resp = GitGenerator.setRequiredFiles(uid, data)
+    case resp
+    when true
+        Response.generic("200", "Updated required files for #{uid}")
+    when false
+        Response.generic("500", "Something went wrong")
+    end
+end
+
+get '/requiredFiles/:uid' do |uid|
+    resp = GitGenerator.getRequiredFiles(uid)
+    case resp 
+    when false
+        Response.generic("404", "Repo doesn't exist for #{uid}")
+    else
+    Response.generic("200", resp)
+    end
+end
+
+# HTTP Response boilerplate
 options "*" do
     response.headers["ALLOW"] = "GET, PUT, POST, DELETE, OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, Accept, X-User-Email, X-Auth-Token"

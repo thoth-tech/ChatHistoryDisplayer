@@ -4,6 +4,7 @@
 # Gems
 require "git"
 require "dir"
+require "json"
 
 #User defined classes/Gems
 
@@ -80,4 +81,23 @@ class GitGenerator
         return Response.diffOutcome(found, difCommit)  
     end
 
+    #Set the required files for a given repo
+    def self.setRequiredFiles(uid, files)
+        File.write($path+"/#{uid}/required.json", JSON.pretty_generate(files))
+        g = Git.open("#$path", repository:"#$path/#{uid}/proj.git")
+        g.add
+        g.commit("Setting required files for a submission")
+
+        return true
+    end
+
+    #Get the required files for a given repo
+    def self.getRequiredFiles(uid)
+        if Dir.exist?($path+"/#{uid}") == false
+            return false
+        end
+        f = File.read($path+"/#{uid}/required.json")
+        data = JSON.parse(f)
+        return data
+    end
 end

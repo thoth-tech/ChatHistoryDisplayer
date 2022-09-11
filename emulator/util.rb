@@ -10,5 +10,9 @@ class Response
         return {Found: found, sha: sha}.to_json
     end
 
+    def self.genericText(code,message)
+        return {Code: code, Message: message}
+    end
+
 end
 
