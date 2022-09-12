@@ -105,10 +105,20 @@ get '/requiredFiles/:uid' do |uid|
     when false
         Response.generic("404", "Repo doesn't exist for #{uid}")
     else
-    Response.generic("200", resp)
+        Response.generic("200", resp)
     end
 end
 
+get '/checkUploadStatus/:uid' do |uid|
+    resp = GitGenerator.checkUploadStatus(uid)
+    case resp
+    when false
+        Response.generic("404", "Repo doesn't exist for #{uid}")
+    else
+        Response.generic("200", resp)
+    end
+end
+    
 # HTTP Response boilerplate
 options "*" do
     response.headers["ALLOW"] = "GET, PUT, POST, DELETE, OPTIONS"

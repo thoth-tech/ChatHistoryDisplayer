@@ -86,7 +86,17 @@ function App() {
               setCheckFileText("")
             }}>Check a file</button>
         </div>    
-
+        
+        {/*Checking status of required files `checkUploadStatus */}
+        <div className="buttonContainer">
+          <br/>
+          <button className="button" 
+            onClick={()=>{
+              console.log(`checkUploadStatus/${uid}`)
+              sendGet(`checkUploadStatus/${uid}`)
+            }}>Check upload status</button>
+        </div> 
+        
       </div>
       {/* Responses from the server  */}
       <div className="respContainer">

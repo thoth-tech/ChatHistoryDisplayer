@@ -106,4 +106,39 @@ class GitGenerator
         data = JSON.parse(f)
         return data
     end
+
+    #Check if all the required files have been uploaded
+    def self.checkUploadStatus(uid)
+        if Dir.exist?($path+"/#{uid}") == false
+            return false
+        end
+        files = Dir.entries($path+"/#{uid}/.")
+        cleanList = []
+        files.each do |file|
+            if file != "required.json" && file != "proj.git"
+                cleanList.push(file)
+            end
+        end
+
+        #Comparing list of files submitted and required files
+        comparedList = []
+        requiredFiles = self.getRequiredFiles(uid)
+        requiredFiles = requiredFiles["requiredFiles"]
+        requiredFiles.each do |fileObj|
+            fileName = fileObj["file"]
+            resp = JSON.parse(self.getDif(uid, fileName))
+            puts resp
+            #File not found in commit history
+            if resp["Found"] == false
+                obj = {'file' => fileName, 'found' => false}
+                comparedList.push(obj)
+            #File found in the commit history
+            else
+                obj = {'file' => fileName, 'found' => true}
+                comparedList.push(obj)
+            end
+        end
+
+        return comparedList
+    end
 end
