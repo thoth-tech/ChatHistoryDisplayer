@@ -96,6 +96,16 @@ function App() {
               sendGet(`checkUploadStatus/${uid}`)
             }}>Check upload status</button>
         </div> 
+
+        {/*Display the log of all commit messages */}
+        <div className="buttonContainer">
+          <br/>
+          <button className="button" 
+            onClick={()=>{
+              console.log(`buttonContainer/${uid}`)
+              sendGet(`log/${uid}`)
+            }}>Get log of all messages</button>
+        </div> 
         
       </div>
       {/* Responses from the server  */}

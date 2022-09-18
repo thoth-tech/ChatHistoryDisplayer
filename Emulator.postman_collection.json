@@ -143,6 +143,33 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Check upload status",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Get commit history and messages",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:4567/log/mathew",
+					"host": [
+						"localhost"
+					],
+					"port": "4567",
+					"path": [
+						"log",
+						"mathew"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
