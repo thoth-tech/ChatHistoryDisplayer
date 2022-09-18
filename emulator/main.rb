@@ -7,7 +7,7 @@ require "sinatra"
 require "sinatra/cross_origin"
 require "json"
 
-#User defined classes/Gems
+#User defined classes/Gemsruby
 require "./generator.rb"
 require "./util.rb"
 

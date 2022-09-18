@@ -28,6 +28,7 @@ class GitGenerator
             g = Git.init("#$path/#{uid}",
                 { :repository => "#$path/#{uid}/proj.git",
                     :index => "#$path/#{uid}/index"} )
+            g.config('user.email', 'testemail@gmail.com')
             return true
         else
             return false

@@ -24,6 +24,21 @@ The front end serves as a convinient way to see the responses served by the back
 
 The emulator is a simple HTTP server running on [Sinatra](https://sinatrarb.com/), a Ruby server library. 
 
+## Run on docker
+
+This is the easiest way to set up since you dont need to worry about installing dependencies. You just need Docker
+
+Ensure you are in the `emulator` directory and run these commands
+
+```
+docker build -t backend-emulator .
+
+docker run --rm -p 4567:4567 --name=backend-emulator-container backend-emulator
+
+```
+
+## Run on your Machine
+
 **Requirements**
 
 Make sure you have ruby installed on your machine. Then you'll want to install the following tools to run the emulator.
