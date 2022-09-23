@@ -16,5 +16,5 @@ This simulator is meant to impersontate the front end of Ontrack as is interacts
 
 ### How to get it running
 
-1. Start the backend emulator by navigating to it in the terminal and running `rerun 'ruby main.rb`
+1. Start the backend emulator by navigating to it in the terminal and running `rerun 'ruby main.rb'`
 2. Start the front end simulator by navigating to it in the terminal and running `npm start` or `yarn start`
