@@ -1,4 +1,4 @@
-import { useState, useTimeout } from "react"
+import { useState } from "react"
 import axios from "axios"
 import "./styling/index.css"
 function App() {
