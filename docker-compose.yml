@@ -1,0 +1,20 @@
+version: '3'
+services:
+  api:
+    build: ./emulator
+    hostname: api
+    #command: rerun --background ruby main.rb
+    ports:
+      - "4567:4567"
+    volumes:
+      - .:/emulator
+   
+  web:
+    build: ./frontEndSimulator
+    hostname: web
+    #command: 'npm install; npm start'
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/web
+
