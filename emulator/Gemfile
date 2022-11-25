@@ -1,0 +1,8 @@
+source 'https://rubygems.org'
+
+gem 'git'
+gem 'puma'
+gem 'dir'
+gem 'sinatra'
+gem 'sinatra-cross_origin'
+gem 'rerun'
