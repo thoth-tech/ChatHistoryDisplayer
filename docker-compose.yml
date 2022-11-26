@@ -3,11 +3,11 @@ services:
   api:
     build: ./emulator
     hostname: api
-    #command: rerun --background ruby main.rb
+    command: 'bundle exec rerun --background "rackup --host 0.0.0.0 -p 4567"'
     ports:
       - "4567:4567"
     volumes:
-      - .:/emulator
+      - ./emulator:/api
    
   web:
     build: ./frontEndSimulator
@@ -16,5 +16,4 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - .:/web
-
+      - ./frontEndSimulator:/app
