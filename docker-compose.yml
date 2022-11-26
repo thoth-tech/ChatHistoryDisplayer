@@ -12,7 +12,7 @@ services:
   web:
     build: ./frontEndSimulator
     hostname: web
-    #command: 'npm install; npm start'
+    command: /bin/bash -c 'npm install; npm start'
     ports:
       - "3000:3000"
     volumes:
