@@ -1,4 +1,3 @@
-FROM debian:latest
 FROM node:19.1-buster
 
 EXPOSE 3000

@@ -1,4 +1,3 @@
-FROM debian:latest
 FROM ruby:3.1-buster
 
 RUN apt-get update && apt-get install -y git
