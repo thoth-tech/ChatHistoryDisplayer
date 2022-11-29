@@ -1,17 +1,18 @@
 FROM ruby:3.1-buster
 
+# download git, a dependency for the git gem
 RUN apt-get update && apt-get install -y git
 
+# create the working dir and copy /emulator local files into /api working dir
 RUN mkdir /api
 WORKDIR /api
 COPY . /api
 
+# use bundle to install gems in gemfile
 RUN bundle install
 
+# expose port 4567
 EXPOSE 4567
 
 CMD ["bundle", "exec", "rackup", "--host", "0.0.0.0", "-p", "4567"]
-#CMD ["bundle exec rerun \"rackup --host 0.0.0.0 -p 4567\""]
-#CMD ["bundle", "exec", "rerun", "rackup", "--host", "0.0.0.0", "-p", "4567"]
-#CMD bundle exec rerun 'rackup --host 0.0.0.0 -p 4567'
 
