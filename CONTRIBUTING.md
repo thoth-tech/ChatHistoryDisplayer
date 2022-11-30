@@ -2,13 +2,18 @@
 
 ## Contents
 - [The Form of CONTRIBUTING.md](#the-form-of-contributingmd)
+
 - [Prerequisites](#prerequisites)
+
 - [Getting a Development Instance Operational](#getting-a-development-instance-operational)
+
 - [Designating `thoth-tech/ChatHistoryDisplayer` as Upstream](#designating-thoth-techchathistorydisplayer-as-upstream)
+
 - [Pushing to YOUR_GITHUB_USERNAME/ChatHistoryDisplayer](#pushing-to-your_github_usernamechathistorydisplayer)
 
 ## The Form of CONTRIBUTING.md
 Besides the prerequisites, the following sections of this document will take the form:
+
 ```
 ## Title
 ### Purpose
@@ -28,12 +33,17 @@ The purpose of the following is to get your own, remote copy (where we call a "r
 
 ### Actions
 - Fork the repository, as the ChatHistoryDisplayer uses the [Forking Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/forking-workflow).
+
 - Clone your fork of the ChatHistoryDisplayer. Replace `YOUR_GITHUB_USERNAME` with your GitHub username, in the following command:
+
   ```bash
   git clone https://github.com/YOUR_GITHUB_USERNAME/ChatHistoryDisplayer.git
   ```
+
 - Enter the newly cloned directory via `cd ChatHistoryDisplayer`.
+
 - Execute Docker Compose to get the development instance up.
+
   ```bash
   docker compose up
   ```
@@ -48,6 +58,7 @@ git pull upstream
 
 ### Actions
 - Add the `thoth-tech/ChatHistoryDisplayer` remote repository as the upstream.
+
   ```bash
   git remote add https://github.com/thoth-tech/ChatHistoryDisplayer.git
   ```
@@ -58,6 +69,7 @@ To get a change into the `thoth-tech/ChatHistoryDisplayer` main branch, you will
 
 ### Actions
 - Push your changes to `origin`, a remote that is automatically added during the cloning process (`origin` refers to your fork of `thoth-tech/ChatHistoryDisplayer`).
+
   ```bash
   git push origin
   ```
