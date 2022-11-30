@@ -49,7 +49,7 @@ git pull upstream
 ### Actions
 - Add the `thoth-tech/ChatHistoryDisplayer` remote repository as the upstream.
   ```bash
-  git remote add https://github.com/`thoth-tech/ChatHistoryDisplayer`.git
+  git remote add https://github.com/thoth-tech/ChatHistoryDisplayer.git
   ```
 
 ## Pushing to YOUR\_GITHUB\_USERNAME/ChatHistoryDisplayer
