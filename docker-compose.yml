@@ -1,0 +1,19 @@
+version: '3'
+services:
+  api:
+    build: ./emulator
+    hostname: api
+    command: 'bundle exec rerun --background "rackup --host 0.0.0.0 -p 4567"'
+    ports:
+      - "4567:4567"
+    volumes:
+      - ./emulator:/api
+   
+  web:
+    build: ./frontEndSimulator
+    hostname: web
+    command: /bin/bash -c 'npm install; npm start'
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontEndSimulator:/app
