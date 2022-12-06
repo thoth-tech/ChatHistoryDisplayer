@@ -5,4 +5,7 @@ gem 'puma'
 gem 'dir'
 gem 'sinatra'
 gem 'sinatra-cross_origin'
-gem 'rerun'
+
+group :development, :test do
+  gem 'rerun'
+end
