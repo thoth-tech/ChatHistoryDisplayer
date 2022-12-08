@@ -52,12 +52,8 @@ function App() {
                 const obj = `
               {
                 "requiredFiles":[
-                  {
-                    "file":"report.txt"
-                  },
-                  {
-                    "file":"summary.txt"
-                  }
+                  "summary.txt",
+                  "report.txt"
                 ]
               }`;
                 sendPost(`requiredFiles/${initText}`, obj);
