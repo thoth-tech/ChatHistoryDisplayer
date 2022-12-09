@@ -9,6 +9,9 @@ gem 'sinatra'
 gem 'sinatra-cross_origin'
 
 group :development, :test do
+  gem 'capybara'
   gem 'rerun'
+  gem 'rspec'
   gem 'rubocop'
+  gem 'selenium-webdriver'
 end
