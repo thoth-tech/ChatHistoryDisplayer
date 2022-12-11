@@ -22,15 +22,16 @@ class GitGenerator
     Dir.mkdir(@path) unless Dir.exist?(@path)
   end
 
-  # if a user does not have a repository, then create one
-  def self.create_user_repo(uid)
-    return if user_repo_exist?(uid)
+  # if the user dir does not exist, then return nil
+  # else, side-effect: create the user dir
+  def self.create_user_dir(uid)
+    return if user_dir_exist?(uid)
 
     Dir.mkdir("#{@path}/#{uid}")
   end
 
-  # returns whether the user's repo exists
-  def self.user_repo_exist?(uid)
+  # returns whether the user dir exists
+  def self.user_dir_exist?(uid)
     Dir.exist?("#{@path}/#{uid}")
   end
 
