@@ -42,7 +42,7 @@ class GitGenerator
 
     Dir.mkdir("#{@path}/#{uid}/#{project_name}")
     g = Git.init("#{@path}/#{uid}/#{project_name}",
-                { repository: "#{@path}/#{uid}/#{project_name}/#{project_name}.git",
+                { repository: "#{@path}/#{uid}/#{project_name}/.git",
                   index: "#{@path}/#{uid}/#{project_name}/index" })
     g.config('user.email', 'testemail@gmail.com')
 
@@ -56,20 +56,20 @@ class GitGenerator
 
   # stages all tracked files
   def self.stage_tracked_files(uid)
-    g = Git.open(@path, repository: "#{@path}/#{uid}/proj.git")
+    g = Git.open(@path, repository: "#{@path}/#{uid}/.git")
     g.add
   end
 
   # commits all staged files, if there are staged files
   def self.commit_staged_files(uid, commit_message)
-    g = Git.open(@path, repository: "#{@path}/#{uid}/proj.git")
+    g = Git.open(@path, repository: "#{@path}/#{uid}/.git")
     g.commit(commit_message)
   end
 
   # diffs a file, such that a diff will be present if the staged file differs from the committed file
   # the diff var will be empty if no difference is present
   def self.diff_file(uid, file_name)
-    g = Git.open(@path, repository: "#{@path}/#{uid}/proj.git")
+    g = Git.open(@path, repository: "#{@path}/#{uid}/.git")
     diff = g.diff.path("#{@path}/#{uid}/#{file_name}")
     diff.empty? ? Response.diff_outcome(false, diff) : Response.diff_outcome(true, diff)
   end
@@ -77,7 +77,7 @@ class GitGenerator
   # set the required files for a specific user's project
   def self.set_required_files(uid, project_name, files)
     File.write("#{@path}/#{uid}/#{project_name}/required.json", JSON.pretty_generate(files))
-    g = Git.open(@path, repository: "#{@path}/#{uid}/#{project_name}/proj.git")
+    g = Git.open(@path, repository: "#{@path}/#{uid}/#{project_name}/.git")
     g.add
     g.commit('auto: set required files for project task')
 
@@ -115,7 +115,7 @@ class GitGenerator
   def self.get_log(uid)
     return false unless Dir.exist?(@path)
 
-    g = Git.open(@path, repository: "#{@path}/#{uid}/proj.git")
+    g = Git.open(@path, repository: "#{@path}/#{uid}/.git")
     commit_list = []
     log = g.log
     log.each do |commit_sha|
