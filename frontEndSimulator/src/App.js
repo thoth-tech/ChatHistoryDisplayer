@@ -3,7 +3,7 @@ import axios from "axios";
 import "./styling/index.css";
 function App() {
   // State variables
-  const [fileText, setFileText] = useState("");
+  const [fileName, setFileName] = useState("");
   const [initText, setInitText] = useState("");
   const [resp, setResp] = useState("");
   const [uid, setUID] = useState("");
@@ -72,19 +72,18 @@ function App() {
             <input
               type="text"
               placeholder="file name"
-              value={fileText}
-              onInput={(e) => setFileText(e.target.value)}
+              value={fileName}
+              onInput={(e) => setFileName(e.target.value)}
             ></input>
             <button
               className="button"
               onClick={() => {
                 const body = `{
-                "commitMsg" : "Added file ${fileText} to repo",
-                "fileName" : "${fileText}",
-                "file": "Randomfile contents here. This would be a PDF in the final product"
+                "fileName" : "${fileName}",
+                "fileContents": "Randomfile contents here. This would be a PDF in the final product"
               }`;
                 sendPost(uid, body);
-                setFileText("");
+                setFileName("");
               }}
             >
               Submit a file
