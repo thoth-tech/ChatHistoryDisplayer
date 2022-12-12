@@ -22,12 +22,13 @@ class GitGenerator
     Dir.mkdir(@path) unless Dir.exist?(@path)
   end
 
-  # if the user dir does not exist, then return nil
-  # else, side-effect: create the user dir
+  # if a user directory already exists, then return false (the operation did not successfully create a new user directory).
+  # else, create the directory (side effect) and return true
   def self.create_user_dir(uid)
-    return if user_dir_exist?(uid)
+    return false if user_dir_exist?(uid)
 
     Dir.mkdir("#{@path}/#{uid}")
+    true
   end
 
   # returns whether the user dir exists
@@ -71,7 +72,7 @@ class GitGenerator
   def self.diff_file(uid, project_name, file_name)
     g = Git.open("#{@path}/#{uid}/#{project_name}")
     diff = g.diff.path("#{@path}/#{uid}/#{project_name}/#{file_name}")
-    diff.empty? ? Response.diff_outcome(false, diff) : Response.diff_outcome(true, diff)
+    diff
   end
 
   # set the required files for a specific user's project
@@ -80,6 +81,27 @@ class GitGenerator
     g = Git.open("#{@path}/#{uid}/#{project_name}")
     g.add
     g.commit('auto: set required files for project task')
+
+    true
+  end
+
+  # creates a file in a user's project repository (./repos/:uid/:project_name/)
+  # file is created using a json payload
+  def self.create_file_from_payload(uid, project_name, file_data)
+    return false unless Dir.exist?("#{@path}/#{uid}/#{project_name}")
+
+    # parsing the payload into a hash
+    payload = JSON.parse(file_data)
+    
+    # creating the file
+    File.open("#{@path}/#{uid}/#{project_name}/#{payload['fileName']}.txt", 'w') do |file|
+      file.write(payload['fileContents'])
+    end
+
+    # adding file to staging area and committing file to local git history of ./repos/:uid/:project_name
+    g = Git.open("#{@path}/#{uid}/#{project_name}")
+    g.add
+    g.commit("auto: add #{payload['fileName']}")
 
     true
   end
