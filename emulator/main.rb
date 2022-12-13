@@ -27,14 +27,15 @@ end
 
 # REST API METHODS HERE
 
-# initialises the GitGenerator and tries to create a user directory
+# creates a user directory
 get '/init/:uid' do |uid|
-  GitGenerator.init
   response = GitGenerator.create_user_dir(uid)
-  if response
+
+  case response
+  when :user_directory_created
     Response.generic('200', 'User directory created successfully!')
-  else
-    Response.generic('401', 'The user directory already exists.')
+  when :user_directory_exist
+    Response.generic('401', 'User directory already exists.')
   end
 end
 
@@ -42,14 +43,50 @@ end
 post '/:uid/:project_name' do |uid, project_name|
   request.body.rewind
   payload = JSON.parse(request.body.read)
-  GitGenerator.create_file_from_payload(uid, project_name, payload)
+  response = GitGenerator.create_file_from_payload(uid, project_name, payload)
+
+  case response
+  when :file_creation_success
+    Response.generic('200', 'File created.')
+  when :project_directory_missing
+    Response.generic('401', 'Project directory missing.')
+  end
 end
 
-# Delete a file for a user
+# deleting a user's directory
 delete '/:uid' do |uid|
-  puts "Deleting repo for #{uid}"
-  # Delete code
-  Response.generic('200', 'Deleted file')
+  response = GitGenerator.delete_user_dir(uid)
+
+  case response
+  when :user_deletion_success
+    Response.generic('201', 'User directory removed successfully!')
+  when :user_missing
+    Reponse.generic('401', 'User directory not found.')
+  end
+end
+
+# deleting a user's project directory
+delete '/:uid/:project_name' do |uid, project_name|
+  response = GitGenerator.delete_project_dir(uid, project_name)
+
+  case response
+  when :project_deletion_success
+    Response.generic('201', 'Project directory removed successfully!')
+  when :project_missing
+    Response.generic('401', 'Project directory not found.')
+  end
+end
+
+# deleting a user's project's file
+delete '/:uid/:project_name/:file_name' do |uid, project_name, file_name|
+  response = GitGenerator.delete_file(uid, project_name, file_name)
+
+  case response
+  when :file_deletion_success
+    Response.generic('201', 'File removed successfully!')
+  when :file_missing
+    Response.generic('401', 'File not found.')
+  end
 end
 
 get '/diff/:uid/:file' do |uid, file|
