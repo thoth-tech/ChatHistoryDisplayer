@@ -4,5 +4,5 @@ node_modules
 DS_STORE
 
 # ignore everything inside the users dir except the .keep file
-/users
-!/users/.keep
+emulator/users
+!emulator/users/.keep
