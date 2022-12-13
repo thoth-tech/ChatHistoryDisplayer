@@ -6,6 +6,7 @@
 # Gems
 require 'git'
 require 'dir'
+require 'fileutils'
 require 'json'
 
 # User defined classes/Gems
@@ -14,113 +15,169 @@ require './util'
 
 # Service to handle git
 class GitGenerator
-  def self.init
-    # the path to the repositories will be ./repos, where the root will be the pwd
-    @path = "#{Dir.pwd}/repos"
+  @path = "#{Dir.pwd}/users"
 
-    # if the path does not exist, then create the path
-    Dir.mkdir(@path) unless Dir.exist?(@path)
-  end
+  # creates a user directory
+  # if a user directory already exists, then return :user_directory_exist
+  # if a user directory is created, then return :user_directory_created
+  def self.create_user_dir(user_id)
+    return :user_directory_exist if user_dir_exist?(user_id)
 
-  # if a user directory already exists, then return false (the operation did not successfully create a new user directory).
-  # else, create the directory (side effect) and return true
-  def self.create_user_dir(uid)
-    return false if user_dir_exist?(uid)
-
-    Dir.mkdir("#{@path}/#{uid}")
-    true
+    Dir.mkdir("#{@path}/#{user_id}")
+    :user_directory_created
   end
 
   # returns whether the user dir exists
-  def self.user_dir_exist?(uid)
-    Dir.exist?("#{@path}/#{uid}")
+  def self.user_dir_exist?(user_id)
+    Dir.exist?("#{@path}/#{user_id}")
   end
 
   # if the project repo exists, return nil
   # else, make the project dir in the user's dir and init the proj dir as git repo
-  def self.create_project_repo(uid, project_name)
-    return if project_repo_exist?(uid, project_name)
+  def self.create_project_repo(user_id, project_name)
+    # if the project directory already exists, return
+    return :project_directory_exist if project_repo_exist?(user_id, project_name)
 
-    Dir.mkdir("#{@path}/#{uid}/#{project_name}")
-    g = Git.init("#{@path}/#{uid}/#{project_name}",
-                { repository: "#{@path}/#{uid}/#{project_name}/.git",
-                  index: "#{@path}/#{uid}/#{project_name}/.git/index" })
-    g.config('user.email', 'testemail@gmail.com')
+    # create the project directory within the user's directory
+    Dir.mkdir("#{@path}/#{user_id}/#{project_name}")
 
-    set_required_files(uid, project_name, { 'requiredFiles' => ['summary.txt', 'report.txt'] })
+    # create the file_diffs directory within the user's project directory
+    Dir.mkdir("#{@path}/#{user_id}/#{project_name}/file_diffs")
+
+    # create .gitignore file in ./users/:user_id/:project_name
+    # this will ignore each user's project's file_diffs directory
+    File.write("#{@path}/#{user_id}/#{project_name}/.gitignore", 'file_diffs/*')
+
+    # initialise the project dir as a local repo and configure it
+    g = Git.init("#{@path}/#{user_id}/#{project_name}",
+                 { repository: "#{@path}/#{user_id}/#{project_name}/.git",
+                   index: "#{@path}/#{user_id}/#{project_name}/.git/index" })
+    g.config('user.email', 'administrator@example.com')
+
+    # set the required files for the project (i.e. create required.json)
+    set_required_files(user_id, project_name, { 'requiredFiles' => ['summary.txt', 'report.txt'] })
   end
 
   # returns whether the user's task repo exists
-  def self.project_repo_exist?(uid, project_name)
-    Dir.exist?("#{@path}/#{uid}/#{project_name}")
+  def self.project_repo_exist?(user_id, project_name)
+    Dir.exist?("#{@path}/#{user_id}/#{project_name}")
   end
 
   # stages all tracked files
-  def self.stage_tracked_files(uid, project_name)
-    g = Git.open("#{@path}/#{uid}/#{project_name}")
+  def self.stage_tracked_files(user_id, project_name)
+    g = Git.open("#{@path}/#{user_id}/#{project_name}")
     g.add
   end
 
   # commits all staged files, if there are staged files
-  def self.commit_staged_files(uid, project_name, commit_message)
-    g = Git.open("#{@path}/#{uid}/#{project_name}")
+  def self.commit_staged_files(user_id, project_name, commit_message)
+    g = Git.open("#{@path}/#{user_id}/#{project_name}")
     g.commit(commit_message)
   end
 
   # diffs a file, such that a diff will be present if the staged file differs from the committed file
   # the diff var will be empty if no difference is present
-  def self.diff_file(uid, project_name, file_name)
-    g = Git.open("#{@path}/#{uid}/#{project_name}")
-    diff = g.diff.path("#{@path}/#{uid}/#{project_name}/#{file_name}")
-    diff
+  def self.diff_file(user_id, project_name, file_name)
+    g = Git.open("#{@path}/#{user_id}/#{project_name}")
+    diff = g.diff.path("#{@path}/#{user_id}/#{project_name}/#{file_name}")
+    diff.to_s
   end
 
   # set the required files for a specific user's project
-  def self.set_required_files(uid, project_name, files)
-    File.write("#{@path}/#{uid}/#{project_name}/required.json", JSON.pretty_generate(files))
-    g = Git.open("#{@path}/#{uid}/#{project_name}")
-    g.add
+  def self.set_required_files(user_id, project_name, files)
+    File.write("#{@path}/#{user_id}/#{project_name}/required.json", JSON.pretty_generate(files))
+    g = Git.open("#{@path}/#{user_id}/#{project_name}")
+    g.add("#{@path}/#{user_id}/#{project_name}/required.json")
     g.commit('auto: set required files for project task')
 
     true
   end
 
-  # creates a file in a user's project repository (./repos/:uid/:project_name/)
+  # creates a file in a user's project repository (./users/:user_id/:project_name/)
   # file is created using a json payload
-  def self.create_file_from_payload(uid, project_name, file_data)
-    return false unless Dir.exist?("#{@path}/#{uid}/#{project_name}")
+  def self.create_file_from_payload(user_id, project_name, file_data)
+    return :project_directory_missing unless Dir.exist?("#{@path}/#{user_id}/#{project_name}")
 
     # parsing the payload into a hash
     payload = JSON.parse(file_data)
-    
+
     # creating the file
-    File.open("#{@path}/#{uid}/#{project_name}/#{payload['fileName']}.txt", 'w') do |file|
+    File.open("#{@path}/#{user_id}/#{project_name}/#{payload['fileName']}", 'w') do |file|
       file.write(payload['fileContents'])
     end
 
-    # adding file to staging area and committing file to local git history of ./repos/:uid/:project_name
-    g = Git.open("#{@path}/#{uid}/#{project_name}")
+    # adding file to staging area and committing file to local git history of ./users/:user_id/:project_name
+    g = Git.open("#{@path}/#{user_id}/#{project_name}")
     g.add
+
+    create_diff_file(user_id, project_name, (payload['fileName']).to_s)
+
     g.commit("auto: add #{payload['fileName']}")
 
-    true
+    :file_creation_success
+  end
+
+  # creates a file at ./users/:user_id/:project_name/file_diffs/:file_name
+  # this file contains the latest diff of that file
+  def self.create_diff_file(user_id, project_name, file_name)
+    diff_string = diff_file(user_id, project_name, file_name)
+
+    # if there's no diff, then return :no_diff_exist
+    return :no_diff_exist if diff_string.empty?
+
+    File.open("#{@path}/#{user_id}/#{project_name}/file_diffs/#{file_name}", 'w') do |file|
+      file.write(diff_string)
+    end
+
+    :diff_file_creation_success
+  end
+
+  # deletes user directory
+  def self.delete_user_dir(user_id)
+    return :user_missing unless user_dir_exist?(user_id)
+
+    FileUtils.rm_rf("#{@path}/#{user_id}")
+    :user_deletion_success
+  end
+
+  # deletes user's project directory
+  def self.delete_project_dir(user_id, project_name)
+    return :project_missing unless project_repo_exist?(user_id, project_name)
+
+    FileUtils.rm_rf("#{@path}/#{user_id}/#{project_name}")
+    :project_deletion_success
+  end
+
+  # deletes a file in a project directory
+  def self.delete_file(user_id, project_name, file_name)
+    return :file_missing unless Dir.exist?("#{@path}/#{user_id}/#{project_name}/#{file_name}")
+
+    # remove the file
+    FileUtils.rm_rf("#{@path}/#{user_id}/#{project_name}/#{file_name}")
+
+    # instantiate a git object and commit the deletion
+    g = Git.open("#{@path}/#{user_id}/#{project_name}")
+    g.add("#{@path}/#{user_id}/#{project_name}/#{file_name}")
+    g.commit('auto: file deleted')
+
+    :file_deletion_success
   end
 
   # get the required files for a specific user's project
-  def self.get_required_files(uid, project_name)
-    return false unless project_repo_exist?(uid, project_name)
+  def self.get_required_files(user_id, project_name)
+    return false unless project_repo_exist?(user_id, project_name)
 
-    f = File.read("#{@path}/#{uid}/#{project_name}/required.json")
+    f = File.read("#{@path}/#{user_id}/#{project_name}/required.json")
     JSON.parse(f)
   end
 
   # check if all the required files for a project, as dictated by required.json,
   # are present
-  def self.required_files_exist?(uid, project_name)
-    return false unless project_repo_exist?(uid, project_name)
+  def self.required_files_exist?(user_id, project_name)
+    return false unless project_repo_exist?(user_id, project_name)
 
-    existing_files = Dir.entries("#{@path}/#{uid}/#{project_name}/.")
-    required_files = get_required_files(uid)['requiredFiles']
+    existing_files = Dir.entries("#{@path}/#{user_id}/#{project_name}/.")
+    required_files = get_required_files(user_id)['requiredFiles']
 
     # if a required file is not in the existing
     required_files.each do |required_file|
@@ -134,10 +191,10 @@ class GitGenerator
   end
 
   # Return the git log for a repo with all commits made
-  def self.get_log(uid, project_name)
+  def self.get_log(user_id, project_name)
     return false unless Dir.exist?(@path)
 
-    g = Git.open("#{@path}/#{uid}/#{project_name}")
+    g = Git.open("#{@path}/#{user_id}/#{project_name}")
     commit_list = []
     log = g.log
     log.each do |commit_sha|
