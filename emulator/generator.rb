@@ -24,7 +24,7 @@ class GitGenerator
     return :user_directory_exist if user_dir_exist?(user_id)
 
     Dir.mkdir("#{@path}/#{user_id}")
-    :user_directory_created
+    :user_creation_success
   end
 
   # returns whether the user dir exists
@@ -56,6 +56,8 @@ class GitGenerator
 
     # set the required files for the project (i.e. create required.json)
     set_required_files(user_id, project_name, { 'requiredFiles' => ['summary.txt', 'report.txt'] })
+
+    :project_creation_success
   end
 
   # returns whether the user's task repo exists
