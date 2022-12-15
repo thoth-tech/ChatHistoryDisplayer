@@ -26,30 +26,23 @@ before do
 end
 
 # REST API METHODS HERE
+
+# initialises the GitGenerator and tries to create a user directory
 get '/init/:uid' do |uid|
   GitGenerator.init
-  resp = GitGenerator.create_user_repo(uid)
-  case resp
-  when true
-    Response.generic('200', "Created a git repo for #{uid}")
-  when false
-    Response.generic('401', "Repo already exists for #{uid}")
+  response = GitGenerator.create_user_dir(uid)
+  if response
+    Response.generic('200', 'User directory created successfully!')
   else
-    Response.generic('501', 'Unknown error. Check server logs')
+    Response.generic('401', 'The user directory already exists.')
   end
 end
 
-get '/:uid' do |uid|
-  puts 'Does user repo exist?'
-  GitGenerator.user_repo_exists?(uid)
-end
-
-# Submit a file for a user
-post '/:uid' do |uid|
-  puts "posting a file to #{uid} repo"
+# use a json payload to upload a file
+post '/:uid/:project_name' do |uid, project_name|
   request.body.rewind
-  data = JSON.parse(request.body.read)
-  GitGenerator.postTo(uid, data['fileName'], data['file'], data['commitMsg'])
+  payload = JSON.parse(request.body.read)
+  GitGenerator.create_file_from_payload(uid, project_name, payload)
 end
 
 # Delete a file for a user
