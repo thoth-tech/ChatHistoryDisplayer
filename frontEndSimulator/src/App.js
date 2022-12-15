@@ -1,12 +1,14 @@
-import { useState, useTimeout } from "react";
+import { useState } from "react";
 import axios from "axios";
 import "./styling/index.css";
 function App() {
   // State variables
   const [fileName, setFileName] = useState("");
-  const [initText, setInitText] = useState("");
+  const [userDirName, setUserDirName] = useState("");
+  const [projDirName, setProjDirName] = useState("");
   const [resp, setResp] = useState("");
   const [uid, setUID] = useState("");
+  const [pid, setPID] = useState("");
   const [checkFileText, setCheckFileText] = useState("");
 
   //Get request handler
@@ -30,36 +32,49 @@ function App() {
   return (
     <div className="App">
       <div className="c">
-        <h1> Ontrack Simulator</h1>
-        <h3> UID set to {uid}</h3>
+        <h1> Front-end </h1>
+        <h3> User ID set to {uid} </h3>
+        <h3> Project Name set to {pid} </h3>
       </div>
       <div className="c">
         <div className="buttonRow">
-          {/*Initialising a repo */}
+          {/* Creating a user directory */}
           <div className="buttonContainer">
             <input
               type="text"
-              placeholder="repo uid"
-              value={initText}
-              onInput={(e) => setInitText(e.target.value)}
+              placeholder="user id"
+              value={userDirName}
+              onInput={(e) => setUserDirName(e.target.value)}
             ></input>
             <button
               className="button"
               onClick={() => {
-                sendGet(`init/${initText}`);
-                setUID(initText);
-                setInitText("");
-                const obj = `
-              {
-                "requiredFiles":[
-                  "summary.txt",
-                  "report.txt"
-                ]
-              }`;
-                sendPost(`requiredFiles/${initText}`, obj);
+                sendGet(`init/${userDirName}`);
+                setUID(userDirName);
+                setUserDirName("");
               }}
             >
-              Initialise a repo
+              Create user directory
+            </button>
+          </div>
+
+          {/* Creating a project directory */}
+          <div className="buttonContainer">
+            <input
+              type="text"
+              placeholder="project name"
+              value={projDirName}
+              onInput={(e) => setProjDirName(e.target.value)}
+            ></input>
+            <button
+              className="button"
+              onClick={() => {
+                sendGet(`init/${uid}/${projDirName}`);
+                setPID(projDirName);
+                setProjDirName("");
+              }}
+            >
+              Create project directory
             </button>
           </div>
 
