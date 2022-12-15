@@ -8,6 +8,9 @@ RUN mkdir /api
 WORKDIR /api
 COPY . /api
 
+# install the bundler gem
+RUN gem install bundler --version 2.3.26
+
 # use bundle to install gems in gemfile
 RUN bundle install
 
