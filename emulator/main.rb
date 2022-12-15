@@ -40,6 +40,18 @@ module Sinatra
       end
     end
 
+    # creates a project directory
+    get '/init/:user_id/:project_id' do |user_id, project_id|
+      response = GitGenerator.create_project_repo(user_id, project_id)
+
+      case response
+      when :user_creation_success
+        Response.generic('200', 'Project directory created successfully!')
+      when :user_dir_exist
+        Response.generic('401', 'Project directory already exists')
+      end
+    end
+
     # use a json payload to upload a file
     post '/:user_id/:project_name' do |user_id, project_name|
       request.body.rewind
