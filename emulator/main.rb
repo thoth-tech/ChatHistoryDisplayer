@@ -7,7 +7,7 @@ require "sinatra"
 require "sinatra/cross_origin"
 require "json"
 
-#User defined classes/Gems
+#User defined classes/Gemsruby
 require "./generator.rb"
 require "./util.rb"
 
@@ -119,6 +119,16 @@ get '/checkUploadStatus/:uid' do |uid|
     end
 end
     
+get '/log/:uid' do |uid|
+    resp = GitGenerator.getLog(uid)
+    case resp
+    when false
+        Response.generic("404", "Repo doesn't exist for #{uid}")
+    else
+        Response.generic("200", resp)
+    end
+end
+
 # HTTP Response boilerplate
 options "*" do
     response.headers["ALLOW"] = "GET, PUT, POST, DELETE, OPTIONS"

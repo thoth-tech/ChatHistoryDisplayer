@@ -1,4 +1,4 @@
-import { useState, useTimeout } from "react"
+import { useState } from "react"
 import axios from "axios"
 import "./styling/index.css"
 function App() {
@@ -95,6 +95,16 @@ function App() {
               console.log(`checkUploadStatus/${uid}`)
               sendGet(`checkUploadStatus/${uid}`)
             }}>Check upload status</button>
+        </div> 
+
+        {/*Display the log of all commit messages */}
+        <div className="buttonContainer">
+          <br/>
+          <button className="button" 
+            onClick={()=>{
+              console.log(`buttonContainer/${uid}`)
+              sendGet(`log/${uid}`)
+            }}>Get log of all messages</button>
         </div> 
         
       </div>

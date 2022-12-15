@@ -28,6 +28,7 @@ class GitGenerator
             g = Git.init("#$path/#{uid}",
                 { :repository => "#$path/#{uid}/proj.git",
                     :index => "#$path/#{uid}/index"} )
+            g.config('user.email', 'testemail@gmail.com')
             return true
         else
             return false
@@ -141,4 +142,22 @@ class GitGenerator
 
         return comparedList
     end
+
+    #Return the git log for a repo with all commits made
+    def self.getLog(uid) 
+        if !Dir.exist?($path) 
+            return false
+        end
+
+        g = Git.open("#$path", repository:"#$path/#{uid}/proj.git")
+        commitList = []
+        log = g.log
+        log.each do |commitSha|
+            #Extract the commit message of each commit
+            commit = g.gcommit(commitSha)
+            obj = {'sha' => commitSha, 'message' => commit.message}
+            commitList.push(obj)
+        end
+        return commitList
+    end 
 end

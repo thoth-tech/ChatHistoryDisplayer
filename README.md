@@ -1,18 +1,18 @@
 # Chat History Displayer
 
 ## Shows the chat history and version controlled file submission.
+
 ### Supported by the Task View and Submission redesign team
 
-We will be utilising a ruby [library](https://github.com/ruby-git/ruby-git) to interface with git to display what files are new and what are already submitted for any given submission. 
+We will be utilising a ruby [library](https://github.com/ruby-git/ruby-git) to interface with git to display what files are new and what are already submitted for any given submission.
 
-We will create a working Proof of Concept (POC) in this repo before working on intergrating with the doubfire backend. 
+We will create a working Proof of Concept (POC) in this repo before working on intergrating with the doubfire backend.
 
 ## Backend Rest API [DESIGN.md](./DESIGN.md)
 
 A simple overview of the proposed solution
 
 ![image](./overview.png)
-
 
 # Getting the Frontend running
 
@@ -22,7 +22,22 @@ The front end serves as a convinient way to see the responses served by the back
 
 # Getting the backend emulator running
 
-The emulator is a simple HTTP server running on [Sinatra](https://sinatrarb.com/), a Ruby server library. 
+The emulator is a simple HTTP server running on [Sinatra](https://sinatrarb.com/), a Ruby server library.
+
+## Run on docker
+
+This is the easiest way to set up since you dont need to worry about installing dependencies. You just need Docker
+
+Ensure you are in the `emulator` directory and run these commands
+
+```
+docker build -t backend-emulator .
+
+docker run --rm -p 4567:4567 --name=backend-emulator-container backend-emulator
+
+```
+
+## Run on your Machine
 
 **Requirements**
 
@@ -34,13 +49,13 @@ sudo gem install rerun
 sudo gem install <missing_package_name_here>
 ```
 
-To run the server, simply enter `rerun 'ruby main.rb'` into the terminal in the same directory as the emulator. 
+To run the server, simply enter `rerun 'ruby main.rb'` into the terminal in the same directory as the emulator.
 
 Navigate to `localhost:4567` on a web brower to see the server running.
 
 You'll want to install a tool like [Postman](https://www.postman.com/) to invoke all of the methods in the emulator or use command line tools like [curl](https://curl.se/)
 
-A postman workspace json is included if you wish to use that. Simply open the file using Postman 
+A postman workspace json is included if you wish to use that. Simply open the file using Postman
 
 ### A video demo
 
