@@ -1,64 +1,27 @@
 # Chat History Displayer
 
-## Shows the chat history and version controlled file submission.
+## About
 
-### Supported by the Task View and Submission redesign team
+In T2/2022, the ChatHistoryDisplayer was created by former student Mat Perkins and supported by the
+Task View and Submission Redesign team. The intention is to create an API that mediates various
+functions similar to OnTrack/Doubtfire. It was originally devised as a proof-of-concept, and while
+the concept is still being explored, it is possible that the API will come into it's own.
 
-We will be utilising a ruby [library](https://github.com/ruby-git/ruby-git) to interface with git to display what files are new and what are already submitted for any given submission.
+## Design as of T2/2022
 
-We will create a working Proof of Concept (POC) in this repo before working on intergrating with the doubfire backend.
+### Documentational Artefact and Image Artefact
 
-## Backend Rest API [DESIGN.md](./DESIGN.md)
-
-A simple overview of the proposed solution
+A [design document](DESIGN.md) is located at the root of the repository. In addition to this, this
+design artefact was also created in T2/2022:
 
 ![image](./overview.png)
 
-# Getting the Frontend running
+### Video Artefact
 
-Read the [documenation](./frontEndSimulator/README.md) on dependencies and how to start the application
+A video artefact, created in T2/2022, is located [here](./demoVid.mp4).
 
-The front end serves as a convinient way to see the responses served by the backend and is meant to simulate what the Ontrack Frontend will be doing. Alternatively you can load `Emulator.postman_collection.json` into [Postman](https://www.postman.com/) and interface with the API directly.
+## Contributing
 
-# Getting the backend emulator running
-
-The emulator is a simple HTTP server running on [Sinatra](https://sinatrarb.com/), a Ruby server library.
-
-## Run on docker
-
-This is the easiest way to set up since you dont need to worry about installing dependencies. You just need Docker
-
-Ensure you are in the `emulator` directory and run these commands
-
-```
-docker build -t backend-emulator .
-
-docker run --rm -p 4567:4567 --name=backend-emulator-container backend-emulator
-
-```
-
-## Run on your Machine
-
-**Requirements**
-
-Make sure you have ruby installed on your machine. Then you'll want to install the following tools to run the emulator.
-
-```
-sudo gem install sinatra
-sudo gem install rerun
-sudo gem install <missing_package_name_here>
-```
-
-To run the server, simply enter `rerun 'ruby main.rb'` into the terminal in the same directory as the emulator.
-
-Navigate to `localhost:4567` on a web brower to see the server running.
-
-You'll want to install a tool like [Postman](https://www.postman.com/) to invoke all of the methods in the emulator or use command line tools like [curl](https://curl.se/)
-
-A postman workspace json is included if you wish to use that. Simply open the file using Postman
-
-### A video demo
-
-This [video](./demoVid.mp4) demo demonstrates how the 2 systems interact with each other
-
-[Link](https://drive.google.com/file/d/1RmW_RmXUaENfiCkVrQTSJVl8b9A0joIn/view?usp=sharing) to it on Google Drive
+In T3/2022, the [CONTRIBUTING.md](CONTRIBUTING.md) was created to instruct a person through getting
+a development instance operational. Once operational, edits to the front-end and the back-end will
+reflect after a simple browser refresh.
