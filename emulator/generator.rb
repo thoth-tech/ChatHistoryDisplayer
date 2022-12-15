@@ -1,163 +1,114 @@
 #!/bin/ruby
-#This file contains the Git class that will perform a series of functions
+# frozen_string_literal: true
+
+# This file contains the Git class that will perform a series of functions
 
 # Gems
-require "git"
-require "dir"
-require "json"
+require 'git'
+require 'dir'
+require 'json'
 
-#User defined classes/Gems
+# User defined classes/Gems
 
-require "./util.rb"
+require './util'
+
+# Service to handle git
 class GitGenerator
-    #Class variables
-    $path = Dir.pwd() + "/repos"
+  def self.init
+    # the path to the repositories will be ./repos, where the root will be the pwd
+    @path = "#{Dir.pwd}/repos"
 
-    # Test function to test connectivity
-    def self.test()
-        return true
+    # if the path does not exist, then create the path
+    Dir.mkdir(@path) unless Dir.exist?(@path)
+  end
+
+  # if a user does not have a repository, then create one
+  def self.create_user_repo(uid)
+    return if user_repo_exists?(uid)
+
+    Dir.mkdir(@path + "/#{uid}")
+    g = Git.init("#{@path}/#{uid}",
+                 { repository: "#{@path}/#{uid}/proj.git",
+                   index: "#{@path}/#{uid}/index" })
+    g.config('user.email', 'testemail@gmail.com')
+
+    set_required_files(uid, { 'requiredFiles' => ['summary.txt', 'report.txt'] })
+  end
+
+  # returns whether the user's repo exists
+  def self.user_repo_exists?(uid)
+    Dir.exist?("#{@path}/#{uid}")
+  end
+
+  # stages all tracked files
+  def self.stage_tracked_files(uid)
+    g = Git.open(@path, repository: "#{@path}/#{uid}/proj.git")
+    g.add
+  end
+
+  # commits all staged files, if there are staged files
+  def self.commit_staged_files(uid, commit_message)
+    g = Git.open(@path, repository: "#{@path}/#{uid}/proj.git")
+    g.commit(commit_message)
+  end
+
+  # diffs a file, such that a diff will be present if the staged file differs from the committed file
+  # the diff var will be empty if no difference is present
+  def self.diff_file(uid, file_name)
+    g = Git.open(@path, repository: "#{@path}/#{uid}/proj.git")
+    diff = g.diff.path("#{@path}/#{uid}/#{file_name}")
+    diff.empty? ? Response.diff_outcome(false, diff) : Response.diff_outcome(true, diff)
+  end
+
+  # Set the required files for a given repo
+  def self.set_required_files(uid, files)
+    File.write("#{@path}/#{uid}/required.json", JSON.pretty_generate(files))
+    g = Git.open(@path, repository: "#{@path}/#{uid}/proj.git")
+    g.add
+    g.commit('Setting required files for a submission')
+
+    true
+  end
+
+  # Get the required files for a given repo
+  def self.get_required_files(uid)
+    return false unless user_repo_exists?(uid)
+
+    f = File.read("#{@path}/#{uid}/required.json")
+    JSON.parse(f)
+  end
+
+  # Check if all the required files have been uploaded
+  def self.required_files_exist?(uid)
+    return false unless user_repo_exists?(uid)
+
+    existing_files = Dir.entries("#{@path}/#{uid}/.")
+    required_files = get_required_files(uid)['requiredFiles']
+
+    # if a required file is not in the existing
+    required_files.each do |required_file|
+      unless existing_files.include?(required_file)
+        puts "#{required_file} not in existing_files"
+        return false
+      end
     end
 
-    def self.init(uid)
-        # Creating a directory to host the git repo
-        if !Dir.exist?($path) 
-            Dir.mkdir($path)
-        end
-        if Dir.exist?($path+"/#{uid}") == false
-            Dir.mkdir($path+"/#{uid}")
-            g = Git.init("#$path/#{uid}",
-                { :repository => "#$path/#{uid}/proj.git",
-                    :index => "#$path/#{uid}/index"} )
-            g.config('user.email', 'testemail@gmail.com')
-            return true
-        else
-            return false
-        end
+    true
+  end
+
+  # Return the git log for a repo with all commits made
+  def self.get_log(uid)
+    return false unless Dir.exist?(@path)
+
+    g = Git.open(@path.to_s, repository: "#{@path}/#{uid}/proj.git")
+    commit_list = []
+    log = g.log
+    log.each do |commit_sha|
+      # Extract the commit message of each commit
+      commit = g.gcommit(commit_sha)
+      obj = { 'sha' => commit_sha, 'message' => commit.message }
+      commit_list.push(obj)
     end
-
-    def self.retrieve(uid)
-        return "retrieving repo for uid " + uid
-    end
-
-    #Add the files to a repo with a commit message
-    def self.postTo(uid, fileName, fileBody, commitMsg)
-        if !Dir.exist?($path)
-            Dir.mkdir($path)
-        end
-        # Creating the file
-        File.open("#$path/#{uid}/#{fileName}.txt", "w") do |f|
-            f.write(fileBody)
-        end
-        # Adding all files into the Git
-        g = Git.open("#$path", repository:"#$path/#{uid}/proj.git")
-        g.add
-        g.commit(commitMsg)
-
-        return "commited the attached file " + fileName + " to " + uid
-    end
-
-    #Get the diff for a file, need to enumerate through commits until a diff is found. return false if no diff is found return true with the commit SHA if a dif was found
-    def self.getDif(uid, fileName)
-
-        #File is in current directory. No need to check diffs
-        if File.file?($path+"/#{uid}/#{fileName}")
-            return Response.diffOutcome(true, "File exists")
-        end
-
-        g = Git.open("#$path", repository:"#$path/#{uid}/proj.git")
-        commits = g.log
-        idx = 0
-        #Hacky solution to get the count. There must be a better way!
-        commits.each do |c|
-            idx += 1
-        end
-        length = idx
-        idx = 0
-        found = false
-        difCommit = ""
-        while idx < length
-            diff = g.diff(commits[idx], commits[idx+1]).path("#$path/#{uid}/#{fileName}")
-            if diff.size() != 0
-                puts "Dif found, returning"
-                found = true
-                difCommit = commits[idx+1]
-                break
-            end
-            idx += 1
-        end
-        return Response.diffOutcome(found, difCommit)  
-    end
-
-    #Set the required files for a given repo
-    def self.setRequiredFiles(uid, files)
-        File.write($path+"/#{uid}/required.json", JSON.pretty_generate(files))
-        g = Git.open("#$path", repository:"#$path/#{uid}/proj.git")
-        g.add
-        g.commit("Setting required files for a submission")
-
-        return true
-    end
-
-    #Get the required files for a given repo
-    def self.getRequiredFiles(uid)
-        if Dir.exist?($path+"/#{uid}") == false
-            return false
-        end
-        f = File.read($path+"/#{uid}/required.json")
-        data = JSON.parse(f)
-        return data
-    end
-
-    #Check if all the required files have been uploaded
-    def self.checkUploadStatus(uid)
-        if Dir.exist?($path+"/#{uid}") == false
-            return false
-        end
-        files = Dir.entries($path+"/#{uid}/.")
-        cleanList = []
-        files.each do |file|
-            if file != "required.json" && file != "proj.git"
-                cleanList.push(file)
-            end
-        end
-
-        #Comparing list of files submitted and required files
-        comparedList = []
-        requiredFiles = self.getRequiredFiles(uid)
-        requiredFiles = requiredFiles["requiredFiles"]
-        requiredFiles.each do |fileObj|
-            fileName = fileObj["file"]
-            resp = JSON.parse(self.getDif(uid, fileName))
-            puts resp
-            #File not found in commit history
-            if resp["Found"] == false
-                obj = {'file' => fileName, 'found' => false}
-                comparedList.push(obj)
-            #File found in the commit history
-            else
-                obj = {'file' => fileName, 'found' => true}
-                comparedList.push(obj)
-            end
-        end
-
-        return comparedList
-    end
-
-    #Return the git log for a repo with all commits made
-    def self.getLog(uid) 
-        if !Dir.exist?($path) 
-            return false
-        end
-
-        g = Git.open("#$path", repository:"#$path/#{uid}/proj.git")
-        commitList = []
-        log = g.log
-        log.each do |commitSha|
-            #Extract the commit message of each commit
-            commit = g.gcommit(commitSha)
-            obj = {'sha' => commitSha, 'message' => commit.message}
-            commitList.push(obj)
-        end
-        return commitList
-    end 
+    commit_list
+  end
 end
