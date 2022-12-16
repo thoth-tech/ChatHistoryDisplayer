@@ -91,7 +91,7 @@ function App() {
               onClick={() => {
                 const body = `{
                 "fileName" : "${fileName}",
-                "fileContents": "Randomfile contents here. This would be a PDF in the final product"
+                "fileContents": "File contents here."
               }`;
                 sendPost(`/${uid}/${pid}`, body);
                 setFileName("");
@@ -112,12 +112,12 @@ function App() {
             <button
               className="button"
               onClick={() => {
-                console.log(`diff/${uid}/${checkFileText}.txt`);
-                sendGet(`diff/${uid}/${checkFileText}.txt`);
+                console.log(`diff/${uid}/${pid}/${checkFileText}`);
+                sendGet(`diff/${uid}/${pid}/${checkFileText}`);
                 setCheckFileText("");
               }}
             >
-              Check a file
+              Diff file
             </button>
           </div>
 
@@ -127,8 +127,8 @@ function App() {
             <button
               className="button"
               onClick={() => {
-                console.log(`checkUploadStatus/${uid}`);
-                sendGet(`checkUploadStatus/${uid}`);
+                console.log(`checkUploadStatus/${uid}/${pid}`);
+                sendGet(`checkUploadStatus/${uid}/${pid}`);
               }}
             >
               Check upload status

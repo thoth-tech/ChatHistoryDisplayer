@@ -136,6 +136,13 @@ class GitGenerator
     :diff_file_creation_success
   end
 
+  def self.get_diff_string_from_file(user_id, project_name, file_name)
+    return :file_not_found unless File.exist?("#{@path}/#{user_id}/#{project_name}/file_diffs/#{file_name}")
+
+    file = File.open("#{@path}/#{user_id}/#{project_name}/file_diffs/#{file_name}", 'r')
+    file.read
+  end
+
   # deletes user directory
   def self.delete_user_dir(user_id)
     return :user_missing unless user_dir_exist?(user_id)
@@ -181,7 +188,7 @@ class GitGenerator
     return false unless project_repo_exist?(user_id, project_name)
 
     existing_files = Dir.entries("#{@path}/#{user_id}/#{project_name}/.")
-    required_files = get_required_files(user_id)['requiredFiles']
+    required_files = get_required_files(user_id, project_name)['requiredFiles']
 
     # if a required file is not in the existing
     required_files.each do |required_file|

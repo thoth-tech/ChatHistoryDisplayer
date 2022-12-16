@@ -106,55 +106,24 @@ delete '/:user_id/:project_name/:file_name' do |user_id, project_name, file_name
   end
 end
 
-get '/diff/:user_id/:file' do |user_id, file|
-  resp = JSON.parse(GitGenerator.getDif(user_id, file))
+# gets the diff string from the diff file
+get '/diff/:user_id/:project_name/:file_name' do |user_id, project_name, file_name|
+  response = GitGenerator.get_diff_string_from_file(user_id, project_name, file_name)
 
-  case resp['Found']
-  when true
-    Response.generic('200', resp['sha'])
-  when false
-    Response.generic('404', 'null')
-  end
-end
-
-post '/requiredFiles/:user_id' do |user_id|
-  request.body.rewind
-  data = JSON.parse(request.body.read)
-
-  resp = GitGenerator.set_required_files(user_id, data)
-  case resp
-  when true
-    Response.generic('200', "Updated required files for #{user_id}")
-  when false
-    Response.generic('500', 'Something went wrong')
-  end
-end
-
-get '/requiredFiles/:user_id' do |user_id|
-  resp = GitGenerator.get_required_files(user_id)
-  case resp
-  when false
-    Response.generic('404', "Repo doesn't exist for #{user_id}")
+  case response
+  when :file_not_found
+    Response.generic('401', 'File not found.')
   else
-    Response.generic('200', resp)
+    Response.generic('201', response)
   end
 end
 
-get '/checkUploadStatus/:user_id' do |user_id|
-  resp = GitGenerator.required_files_exist?(user_id)
+# get the status of a user's project (are all required files present?)
+get '/checkUploadStatus/:user_id/:project_name' do |user_id, project_name|
+  resp = GitGenerator.required_files_exist?(user_id, project_name)
   case resp
   when false
-    Response.generic('404', "The required files do not exist for UID: #{user_id}.")
-  else
-    Response.generic('200', resp)
-  end
-end
-
-get '/log/:user_id' do |user_id|
-  resp = GitGenerator.get_log(user_id)
-  case resp
-  when false
-    Response.generic('404', "Repo doesn't exist for #{user_id}")
+    Response.generic('404', "The required files do not exist in the user's project.")
   else
     Response.generic('200', resp)
   end
