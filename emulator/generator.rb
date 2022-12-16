@@ -103,10 +103,10 @@ class GitGenerator
     # parsing the payload into a hash
     payload = JSON.parse(file_data)
 
-    # creating the file
-    File.open("#{@path}/#{user_id}/#{project_name}/#{payload['fileName']}", 'w') do |file|
-      file.write(payload['fileContents'])
-    end
+    # writing to file from payload
+    file = File.open("#{@path}/#{user_id}/#{project_name}/#{payload['fileName']}", 'w')
+    file.write(payload['fileContents'])
+    file.close
 
     # adding file to staging area and committing file to local git history of ./users/:user_id/:project_name
     g = Git.open("#{@path}/#{user_id}/#{project_name}")
@@ -114,7 +114,8 @@ class GitGenerator
 
     create_diff_file(user_id, project_name, (payload['fileName']).to_s)
 
-    g.commit("auto: add #{payload['fileName']}")
+    # unless there's something to commit, don't commit
+    g.commit("auto: add #{payload['fileName']}") unless g.diff.to_s.empty?
 
     :file_creation_success
   end
@@ -127,9 +128,10 @@ class GitGenerator
     # if there's no diff, then return :no_diff_exist
     return :no_diff_exist if diff_string.empty?
 
-    File.open("#{@path}/#{user_id}/#{project_name}/file_diffs/#{file_name}", 'w') do |file|
-      file.write(diff_string)
-    end
+    # write file
+    file = File.open("#{@path}/#{user_id}/#{project_name}/file_diffs/#{file_name}", 'w')
+    file.write(diff_string)
+    file.close
 
     :diff_file_creation_success
   end

@@ -93,7 +93,7 @@ function App() {
                 "fileName" : "${fileName}",
                 "fileContents": "Randomfile contents here. This would be a PDF in the final product"
               }`;
-                sendPost(uid, body);
+                sendPost(`/${uid}/${pid}`, body);
                 setFileName("");
               }}
             >

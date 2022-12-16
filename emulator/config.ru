@@ -4,4 +4,4 @@
 
 require './main'
 
-run Sinatra::Base
+run Sinatra::Application
