@@ -1,22 +1,22 @@
 import { useState } from "react";
 import axios from "axios";
+import { Box, Button, TextField } from "@mui/material";
 import "./styling/index.css";
 function App() {
   // State variables
   const [fileName, setFileName] = useState("");
-  const [userDirName, setUserDirName] = useState("");
-  const [projDirName, setProjDirName] = useState("");
-  const [resp, setResp] = useState("");
+  const [response, setResponse] = useState("");
   const [uid, setUID] = useState("");
   const [pid, setPID] = useState("");
-  const [checkFileText, setCheckFileText] = useState("");
+  const [fileContents, setFileContents] = useState("");
+  const [diff, setDiff] = useState("The `git diff` of a file with itself will appear here.")
 
   //Get request handler
   function sendGet(endpoint) {
     const url = `http://localhost:4567/${endpoint}`;
     axios.get(url).then((response) => {
       console.log(response.data);
-      setResp(JSON.stringify(response.data));
+      setResponse(JSON.stringify(response.data));
     });
   }
 
@@ -25,124 +25,230 @@ function App() {
     const url = `http://localhost:4567/${endpoint}`;
     axios.post(url, body).then((response) => {
       console.log(response.data);
-      setResp(JSON.stringify(response.data));
+      setResponse(JSON.stringify(response.data));
+    });
+  }
+
+  function getDiff(endpoint) {
+    const url = `http://localhost:4567/${endpoint}`;
+    axios.get(url).then((response) => {
+      setResponse(JSON.stringify(response.data));
+      setDiff(response.data['Message'].match(/(^-\w+.*)|(^\+\w+.*)|(^ \w+.*)/gm).join("\n"));
     });
   }
 
   return (
-    <div className="App">
-      <div className="c">
-        <h1> Front-end </h1>
-        <h3> User ID set to {uid} </h3>
-        <h3> Project Name set to {pid} </h3>
-      </div>
-      <div className="c">
-        <div className="buttonRow">
-          {/* Creating a user directory */}
-          <div className="buttonContainer">
-            <input
-              type="text"
-              placeholder="user id"
-              value={userDirName}
-              onInput={(e) => setUserDirName(e.target.value)}
-            ></input>
-            <button
-              className="button"
-              onClick={() => {
-                sendGet(`init/${userDirName}`);
-                setUID(userDirName);
-                setUserDirName("");
-              }}
-            >
-              Create user directory
-            </button>
-          </div>
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+    >
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        sx={{
+          lineHeight: 0
+        }}
+      >
+        <Box
+          sx={{
+            lineHeight: 1
+          }}
+        >
+          <h1>Front-end</h1>
+        </Box>
+        
+        <Box>
+          <p>User ID is set to: {uid}</p>
+        </Box>
+        
+        <Box>
+          <p>Project Name is set to: {pid} </p>
+        </Box>
+        
+        <Box>
+          <p>File Name is set to: {fileName} </p>
+        </Box>
+      </Box>
 
-          {/* Creating a project directory */}
-          <div className="buttonContainer">
-            <input
-              type="text"
-              placeholder="project name"
-              value={projDirName}
-              onInput={(e) => setProjDirName(e.target.value)}
-            ></input>
-            <button
-              className="button"
-              onClick={() => {
-                sendGet(`init/${uid}/${projDirName}`);
-                setPID(projDirName);
-                setProjDirName("");
-              }}
-            >
-              Create project directory
-            </button>
-          </div>
+      <Box
+        display="flex"
+      >
+        <Box p={3}>
+          <TextField
+            label="User ID"
+            onChange={(event) => {
+              setUID(event.target.value);
+            }}
+          />
+        </Box>
 
-          {/*Submiting a file */}
-          <div className="buttonContainer">
-            <input
-              type="text"
-              placeholder="file name"
-              value={fileName}
-              onInput={(e) => setFileName(e.target.value)}
-            ></input>
-            <button
-              className="button"
-              onClick={() => {
-                const body = `{
-                "fileName" : "${fileName}",
-                "fileContents": "File contents here."
-              }`;
-                sendPost(`/${uid}/${pid}`, body);
-                setFileName("");
-              }}
-            >
-              Submit a file
-            </button>
-          </div>
+        <Box p={3}>
+          <TextField
+            label="Project Name"
+            onChange={(event) => {
+              setPID(event.target.value);
+            }}
+          />
+        </Box>
 
-          {/*Checking if a file was submitted*/}
-          <div className="buttonContainer">
-            <input
-              type="text"
-              placeholder="file name"
-              value={checkFileText}
-              onInput={(e) => setCheckFileText(e.target.value)}
-            ></input>
-            <button
-              className="button"
-              onClick={() => {
-                console.log(`diff/${uid}/${pid}/${checkFileText}`);
-                sendGet(`diff/${uid}/${pid}/${checkFileText}`);
-                setCheckFileText("");
-              }}
-            >
-              Diff file
-            </button>
-          </div>
+        <Box p={3}>
+          <TextField
+            label="File Name"
+            onChange={(event) => {
+              setFileName(event.target.value);
+            }}
+          />
+        </Box>
+      </Box>
 
-          {/*Checking status of required files `checkUploadStatus */}
-          <div className="buttonContainer">
-            <br />
-            <button
-              className="button"
+      <Box
+        display="flex"
+      >
+      <Box
+        width={400}
+      >
+        <TextField
+          label="File Contents"
+          multiline
+          variant="outlined"
+          fullWidth
+          minRows={10}
+          onChange={(event) => {
+            setFileContents(event.target.value);
+          }}
+        />
+      </Box>
+
+      <Box
+        width={400}
+      >
+        <TextField
+          multiline
+          variant="outlined"
+          fullWidth
+          minRows={10}
+          disabled
+          value={diff}
+          sx={{
+            backgroundColor: '#EEF'
+          }}
+        />
+      </Box>
+      </Box>
+
+      <Box
+        display="flex"
+        alignItems="center"
+      >
+        <Box paddingTop={2}
+          paddingRight={1}
+          display="flex"
+          flexDirection="column"
+          alignItems="stretch"
+          width={300}
+        >
+          <Box paddingBottom={2} fullWidth>
+            <Button
+              variant="contained"
+              fullWidth
               onClick={() => {
-                console.log(`checkUploadStatus/${uid}/${pid}`);
-                sendGet(`checkUploadStatus/${uid}/${pid}`);
+                sendGet(`init/${uid}`);
               }}
             >
-              Check upload status
-            </button>
-          </div>
-        </div>
-        {/* Responses from the server  */}
-        <div className="respContainer">
-          <strong>Response</strong>
-          <div className="breaker"></div>
-          <p>{resp}</p>
-        </div>
-      </div>
-    </div>
+              Create User
+            </Button>
+          </Box>
+          
+          <Box paddingBottom={2} fullWidth>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={() => {
+                const payload = `{
+                  "fileName" : "${fileName}",
+                  "fileContents" : ${JSON.stringify(fileContents)}
+                }`;
+                sendPost(`${uid}/${pid}`, payload);
+              }}
+            >
+              Write to File
+            </Button>
+          </Box>
+
+          <Box fullWidth>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={() => {
+                sendGet(`file_exist/${uid}/${pid}/${fileName}`)
+              }}
+            >
+              File Exists in Project?
+            </Button>
+          </Box>
+        </Box>
+
+        <Box paddingTop={2}
+          paddingLeft={1}
+          display="flex"
+          flexDirection="column"
+          alignItems="stretch"
+          width={300}
+        >
+          <Box paddingBottom={2} fullWidth>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={() => {
+                sendGet(`init/${uid}/${pid}`);
+              }}
+            >
+              Create Project
+            </Button>
+          </Box>
+
+          <Box paddingBottom={2} fullWidth>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={() => {
+                getDiff(`diff/${uid}/${pid}/${fileName}`);
+              }}
+            >
+              Diff File
+            </Button>
+          </Box>
+          
+          <Box fullWidth>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={() => {
+                sendGet(`required_files/${uid}/${pid}`);
+              }}
+            >
+              Required Files in Project?
+            </Button>
+          </Box>
+        </Box>
+
+      </Box>
+
+      <Box paddingTop={6}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        sx={{
+          lineHeight: 0
+        }}
+      >
+        <h2>Raw JSON</h2>
+        <p>{response}</p>
+      </Box>
+
+    </Box>
   );
 }
 
