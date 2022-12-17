@@ -178,14 +178,17 @@ class GitGenerator
   def self.get_required_files(user_id, project_name)
     return false unless project_repo_exist?(user_id, project_name)
 
-    f = File.read("#{@path}/#{user_id}/#{project_name}/required.json")
-    JSON.parse(f)
+    file = File.open("#{@path}/#{user_id}/#{project_name}/required.json", 'r')
+    file_contents = file.read
+    file.close
+
+    JSON.parse(file_contents)
   end
 
   # check if all the required files for a project, as dictated by required.json,
   # are present
   def self.required_files_exist?(user_id, project_name)
-    return false unless project_repo_exist?(user_id, project_name)
+    return :required_files_not_found unless project_repo_exist?(user_id, project_name)
 
     existing_files = Dir.entries("#{@path}/#{user_id}/#{project_name}/.")
     required_files = get_required_files(user_id, project_name)['requiredFiles']
@@ -194,11 +197,11 @@ class GitGenerator
     required_files.each do |required_file|
       unless existing_files.include?(required_file)
         puts "#{required_file} not in existing_files"
-        return false
+        return :required_files_not_found
       end
     end
 
-    true
+    :required_files_found
   end
 
   # does the file exist?

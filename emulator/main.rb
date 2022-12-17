@@ -119,7 +119,7 @@ get '/diff/:user_id/:project_name/:file_name' do |user_id, project_name, file_na
 end
 
 # get whether a file exists in a user's project dir
-get '/:user_id/:project_name/:file_name' do |user_id, project_name, file_name|
+get '/file_exist/:user_id/:project_name/:file_name' do |user_id, project_name, file_name|
   response = GitGenerator.file_exist?(user_id, project_name, file_name)
 
   case response
@@ -131,13 +131,13 @@ get '/:user_id/:project_name/:file_name' do |user_id, project_name, file_name|
 end
 
 # get the status of a user's project (are all required files present?)
-get '/checkRequiredFiles/:user_id/:project_name' do |user_id, project_name|
+get '/required_files/:user_id/:project_name' do |user_id, project_name|
   response = GitGenerator.required_files_exist?(user_id, project_name)
 
   case response
-  when true
-    Response.generic('404', "The required files do not exist in the user's project.")
-  when false
-    Response.generic('200', 'Test!')
+  when :required_files_found
+    Response.generic('404', true)
+  when :required_files_not_found
+    Response.generic('404', false)
   end
 end
