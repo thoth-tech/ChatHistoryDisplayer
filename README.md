@@ -2,26 +2,20 @@
 
 ## About
 
-In T2/2022, the ChatHistoryDisplayer was created by former student Mat Perkins and supported by the
-Task View and Submission Redesign team. The intention is to create an API that mediates various
-functions similar to OnTrack/Doubtfire. It was originally devised as a proof-of-concept, and while
-the concept is still being explored, it is possible that the API will come into it's own.
+ The ChatHistoryDisplayer consists of two parts: the server, which is being developed as an API, and the front-end, which tests the API. The server is situated in the `emulator` directory, while the front-end is situated in the `frontEndSimulator` directory. The mission of the API is to be integrated into the OnTrack platform.
 
-## Design as of T2/2022
+## Present
 
-### Documentational Artefact and Image Artefact
+### Demonstrative Video
 
-A [design document](DESIGN.md) is located at the root of the repository. In addition to this, this
-design artefact was also created in T2/2022:
+A demonstrative video exists, you can find it [inside of the repository](media/demonstration.mp4) or [on YouTube](https://youtu.be/YQ2wFPsoNcA). It showcases how to spin up chathistorydisplayer-api and chathistorydisplayer-web. It also explains some of the important files in both of the applications involved in this repository.
 
-![image](./overview.png)
+## Future
 
-### Video Artefact
+It is important that focus is kept on the ultimate goal: the integration into the OnTrack platform.
 
-A video artefact, created in T2/2022, is located [here](./demoVid.mp4).
+![Diagram of chathistorydisplayer-api integrated into the OnTrack platform](media/api_proposition.png)
 
 ## Contributing
 
-In T3/2022, the [CONTRIBUTING.md](CONTRIBUTING.md) was created to instruct a person through getting
-a development instance operational. Once operational, edits to the front-end and the back-end will
-reflect after a simple browser refresh.
+Before contributing, please read the [contributing guidelines](CONTRIBUTING.md).
