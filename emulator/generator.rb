@@ -201,6 +201,11 @@ class GitGenerator
     true
   end
 
+  # does the file exist?
+  def self.file_exist?(user_id, project_name, file_name)
+    File.exist?("#{@path}/#{user_id}/#{project_name}/#{file_name}")
+  end
+
   # Return the git log for a repo with all commits made
   def self.get_log(user_id, project_name)
     return false unless Dir.exist?(@path)
