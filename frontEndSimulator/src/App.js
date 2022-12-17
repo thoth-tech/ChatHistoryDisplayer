@@ -37,22 +37,6 @@ function App() {
     });
   }
 
-  const handleUidChange = (event) => {
-    setUID(event.target.value);
-  };
-
-  const handlePidChange = (event) => {
-    setPID(event.target.value);
-  };
-
-  const handleFileNameChange = (event) => {
-    setFileName(event.target.value);
-  };
-
-  const handleFileContentsChange = (event) => {
-    setFileContents(event.target.value);
-  };
-
   return (
     <Box
       display="flex"
@@ -94,21 +78,27 @@ function App() {
         <Box p={3}>
           <TextField
             label="User ID"
-            onChange={handleUidChange}
+            onChange={(event) => {
+              setUID(event.target.value);
+            }}
           />
         </Box>
 
         <Box p={3}>
           <TextField
             label="Project Name"
-            onChange={handlePidChange}
+            onChange={(event) => {
+              setPID(event.target.value);
+            }}
           />
         </Box>
 
         <Box p={3}>
           <TextField
             label="File Name"
-            onChange={handleFileNameChange}
+            onChange={(event) => {
+              setFileName(event.target.value);
+            }}
           />
         </Box>
       </Box>
@@ -125,7 +115,9 @@ function App() {
           variant="outlined"
           fullWidth
           minRows={10}
-          onChange={handleFileContentsChange}
+          onChange={(event) => {
+            setFileContents(event.target.value);
+          }}
         />
       </Box>
 
