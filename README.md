@@ -14,7 +14,7 @@ A demonstrative video exists, you can find it [inside of the repository](media/d
 
 It is important that focus is kept on the ultimate goal: the integration into the OnTrack platform.
 
-![Diagram of chathistorydisplayer-api integrated into the OnTrack platform](media/api_proposition.png)
+A [diagram of chathistorydisplayer-api integrated into the OnTrack platform](media/api_proposition.png) is a good artefact to look at, in terms of the future of this repository.
 
 ## Contributing
 
