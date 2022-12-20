@@ -1,49 +1,21 @@
 # Chat History Displayer
 
-## Shows the chat history and version controlled file submission.
-### Supported by the Task View and Submission redesign team
+## About
 
-We will be utilising a ruby [library](https://github.com/ruby-git/ruby-git) to interface with git to display what files are new and what are already submitted for any given submission. 
+ The ChatHistoryDisplayer consists of two parts: the server, which is being developed as an API, and the front-end, which tests the API. The server is situated in the `emulator` directory, while the front-end is situated in the `frontEndSimulator` directory. The mission of the API is to be integrated into the OnTrack platform.
 
-We will create a working Proof of Concept (POC) in this repo before working on intergrating with the doubfire backend. 
+## Present
 
-## Backend Rest API [DESIGN.md](./DESIGN.md)
+### Demonstrative Video
 
-A simple overview of the proposed solution
+A demonstrative video exists, you can find it [inside of the repository](media/demonstration.mp4) or [on YouTube](https://youtu.be/YQ2wFPsoNcA). It showcases how to spin up chathistorydisplayer-api and chathistorydisplayer-web. It also explains some of the important files in both of the applications involved in this repository.
 
-![image](./overview.png)
+## Future
 
+It is important that focus is kept on the ultimate goal: the integration into the OnTrack platform.
 
-# Getting the Frontend running
+A [diagram of chathistorydisplayer-api integrated into the OnTrack platform](media/api_proposition.png) is a good artefact to look at, in terms of the future of this repository.
 
-Read the [documenation](./frontEndSimulator/README.md) on dependencies and how to start the application
+## Contributing
 
-The front end serves as a convinient way to see the responses served by the backend and is meant to simulate what the Ontrack Frontend will be doing. Alternatively you can load `Emulator.postman_collection.json` into [Postman](https://www.postman.com/) and interface with the API directly.
-
-# Getting the backend emulator running
-
-The emulator is a simple HTTP server running on [Sinatra](https://sinatrarb.com/), a Ruby server library. 
-
-**Requirements**
-
-Make sure you have ruby installed on your machine. Then you'll want to install the following tools to run the emulator.
-
-```
-sudo gem install sinatra
-sudo gem install rerun
-sudo gem install <missing_package_name_here>
-```
-
-To run the server, simply enter `rerun 'ruby main.rb'` into the terminal in the same directory as the emulator. 
-
-Navigate to `localhost:4567` on a web brower to see the server running.
-
-You'll want to install a tool like [Postman](https://www.postman.com/) to invoke all of the methods in the emulator or use command line tools like [curl](https://curl.se/)
-
-A postman workspace json is included if you wish to use that. Simply open the file using Postman 
-
-### A video demo
-
-This [video](./demoVid.mp4) demo demonstrates how the 2 systems interact with each other
-
-[Link](https://drive.google.com/file/d/1RmW_RmXUaENfiCkVrQTSJVl8b9A0joIn/view?usp=sharing) to it on Google Drive
+Before contributing, please read the [contributing guidelines](CONTRIBUTING.md).

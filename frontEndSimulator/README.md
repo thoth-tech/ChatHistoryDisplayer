@@ -1,20 +1,11 @@
 # Front End Simulator
 
-### What is it
+## About
 
-This simulator is meant to impersontate the front end of Ontrack as is interacts with the backend. 
+A simple React.js application that acts as the front-end. It simply hits various end-points of the
+back-end and provides a simple user-interface.
 
-- Runs as a basic React.js App
-- It is simply hitting different endpoints on the backend server.  
-- You also hit the endpoints directly with a tool like `Postman`
-- Serves as a more accessible method of interacting with the server
+## Contributing
 
-### Requirements
-
-- You will need to have `NPM` installed to run Node apps. [Here](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) you can install `NPM` 
-- You will also need `Yarn` Follow [this](https://yarnpkg.com/getting-started/migration#why-should-you-migrate) guide for installing `Yarn`
-
-### How to get it running
-
-1. Start the backend emulator by navigating to it in the terminal and running `rerun 'ruby main.rb'`
-2. Start the front end simulator by navigating to it in the terminal and running `npm start` or `yarn start`
+For more information on contributing, which includes getting a development instance operational,
+then please follow the [CONTRIBUTING.md](../CONTRIBUTING.md).

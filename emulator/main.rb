@@ -1,126 +1,143 @@
-#Gems 
-require "rubygems"
-require "git"
-require "dir"
-require "logger"
-require "sinatra"
-require "sinatra/cross_origin"
-require "json"
+# frozen_string_literal: true
 
-#User defined classes/Gems
-require "./generator.rb"
-require "./util.rb"
+# Gems
+require 'rubygems'
+require 'git'
+require 'dir'
+require 'logger'
+require 'sinatra'
+require 'sinatra/cross_origin'
+require 'json'
+
+# User defined classes/Gemsruby
+require './generator'
+require './util'
 
 # HTTP Response boilerplate
 set :bind, '0.0.0.0'
 
 configure do
-    enable :cross_origin
+  enable :cross_origin
 end
 
 before do
-    content_type :json
-    response.headers['Access-Control-Allow-Origin'] = '*'
+  content_type :json
+  response.headers['Access-Control-Allow-Origin'] = '*'
 end
 
-# REST API METHODS HERE
-get '/test' do
-    # Have coded it to return true. Will use this as our positive outcome scenario
-    outcome = GitGenerator.test() 
-
-    # Determine what response the server gives based on that outcome
-    case outcome
-    # Positive result
-    when true
-        Response.generic("200", "Positive outcome")
-    # Negative result
-    when false
-        Response.generic("500", "Negative outcome")
-    # Unknown result
-    else 
-        Response.generic("501", "Unknown outcome")
-    end
-
-end
-
-get '/init/:uid' do |uid|
-    resp = GitGenerator.init(uid)
-    case resp
-    when true
-        Response.generic("200", "Created a git repo for #{uid}")
-    when false 
-        Response.generic("401", "Repo already exists for #{uid}")
-    else 
-        Response.generic("501", "Unknown error. Check server logs")
-    end
-end
-
-get '/:uid' do |uid|
-    puts 'retrieving Git repo'
-    GitGenerator.retrieve(uid)
-end
-
-# Submit a file for a user
-post '/:uid' do |uid|
-    puts 'posting a file to ' + uid + " repo"
-    request.body.rewind
-    data = JSON.parse(request.body.read)
-    GitGenerator.postTo(uid, data["fileName"], data["file"], data["commitMsg"])
-end
-
-# Delete a file for a user
-delete '/:uid' do |uid|
-    puts 'Deleting repo for ' + uid
-    # Delete code
-    Response.generic("200", "Deleted file")
-end
-
-get '/diff/:uid/:file' do |uid, file|
-    resp = JSON.parse(GitGenerator.getDif(uid, file))
-    
-    case resp["Found"]
-    when true
-        Response.generic("200", resp["sha"])
-    when false
-        Response.generic("404", "null")
-    end
-end
-
-post '/requiredFiles/:uid' do |uid|
-    request.body.rewind
-    data = JSON.parse(request.body.read)
-
-    resp = GitGenerator.setRequiredFiles(uid, data)
-    case resp
-    when true
-        Response.generic("200", "Updated required files for #{uid}")
-    when false
-        Response.generic("500", "Something went wrong")
-    end
-end
-
-get '/requiredFiles/:uid' do |uid|
-    resp = GitGenerator.getRequiredFiles(uid)
-    case resp 
-    when false
-        Response.generic("404", "Repo doesn't exist for #{uid}")
-    else
-        Response.generic("200", resp)
-    end
-end
-
-get '/checkUploadStatus/:uid' do |uid|
-    resp = GitGenerator.checkUploadStatus(uid)
-    case resp
-    when false
-        Response.generic("404", "Repo doesn't exist for #{uid}")
-    else
-        Response.generic("200", resp)
-    end
-end
-    
 # HTTP Response boilerplate
-options "*" do
-    response.headers["ALLOW"] = "GET, PUT, POST, DELETE, OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, Accept, X-User-Email, X-Auth-Token"
+options '*' do
+  response.headers['ALLOW'] = 'GET, PUT, POST, DELETE, OPTIONS'
+  response.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type, Accept, X-User-Email, X-Auth-Token'
+end
+
+# API END-POINTS
+# creates a user directory
+get '/init/:user_id' do |user_id|
+  response = GitGenerator.create_user_dir(user_id)
+
+  case response
+  when :user_creation_success
+    Response.generic('201', 'User directory created successfully!')
+  when :user_directory_exist
+    Response.generic('401', 'User directory already exists.')
+  end
+end
+
+# creates a project directory
+get '/init/:user_id/:project_id' do |user_id, project_id|
+  response = GitGenerator.create_project_repo(user_id, project_id)
+
+  case response
+  when :project_creation_success
+    Response.generic('200', 'Project directory created successfully!')
+  when :project_directory_exist
+    Response.generic('401', 'Project directory already exists')
+  end
+end
+
+# use a json payload to upload a file
+post '/:user_id/:project_name' do |user_id, project_name|
+  request.body.rewind
+  payload = request.body.read
+  response = GitGenerator.create_file_from_payload(user_id, project_name, payload)
+
+  case response
+  when :file_creation_success
+    Response.generic('200', 'File created.')
+  when :project_directory_missing
+    Response.generic('401', 'Project directory missing.')
+  end
+end
+
+# deleting a user's directory
+delete '/:user_id' do |user_id|
+  response = GitGenerator.delete_user_dir(user_id)
+
+  case response
+  when :user_deletion_success
+    Response.generic('201', 'User directory removed successfully!')
+  when :user_missing
+    Reponse.generic('401', 'User directory not found.')
+  end
+end
+
+# deleting a user's project directory
+delete '/:user_id/:project_name' do |user_id, project_name|
+  response = GitGenerator.delete_project_dir(user_id, project_name)
+
+  case response
+  when :project_deletion_success
+    Response.generic('201', 'Project directory removed successfully!')
+  when :project_missing
+    Response.generic('401', 'Project directory not found.')
+  end
+end
+
+# deleting a user's project's file
+delete '/:user_id/:project_name/:file_name' do |user_id, project_name, file_name|
+  response = GitGenerator.delete_file(user_id, project_name, file_name)
+
+  case response
+  when :file_deletion_success
+    Response.generic('201', 'File removed successfully!')
+  when :file_missing
+    Response.generic('401', 'File not found.')
+  end
+end
+
+# gets the diff string from the diff file
+get '/diff/:user_id/:project_name/:file_name' do |user_id, project_name, file_name|
+  response = GitGenerator.get_diff_string_from_file(user_id, project_name, file_name)
+
+  case response
+  when :file_not_found
+    Response.generic('401', 'File not found.')
+  else
+    Response.generic('201', response)
+  end
+end
+
+# get whether a file exists in a user's project dir
+get '/file_exist/:user_id/:project_name/:file_name' do |user_id, project_name, file_name|
+  response = GitGenerator.file_exist?(user_id, project_name, file_name)
+
+  case response
+  when true
+    Response.generic('201', 'File found.')
+  else
+    Response.generic('401', 'File not found.')
+  end
+end
+
+# get the status of a user's project (are all required files present?)
+get '/required_files/:user_id/:project_name' do |user_id, project_name|
+  response = GitGenerator.required_files_exist?(user_id, project_name)
+
+  case response
+  when :required_files_found
+    Response.generic('404', true)
+  when :required_files_not_found
+    Response.generic('404', false)
+  end
 end
