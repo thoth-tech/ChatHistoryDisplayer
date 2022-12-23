@@ -161,7 +161,7 @@ class GitGenerator
 
   # deletes a file in a project directory
   def self.delete_file(user_id, project_name, file_name)
-    return :file_missing unless Dir.exist?("#{@path}/#{user_id}/#{project_name}/#{file_name}")
+    return :file_missing unless File.exist?("#{@path}/#{user_id}/#{project_name}/#{file_name}")
 
     # remove the file
     FileUtils.rm_rf("#{@path}/#{user_id}/#{project_name}/#{file_name}")
