@@ -108,7 +108,12 @@ end
 
 # gets the diff string from the diff file
 get '/diff/:user_id/:project_name/:file_name' do |user_id, project_name, file_name|
-  response = GitGenerator.get_diff_string_from_file(user_id, project_name, file_name)
+  
+  if GitGenerator.file_exist?(user_id, project_name, file_name)
+    response = GitGenerator.get_diff_string_from_file(user_id, project_name, file_name)
+  else
+    response = GitGenerator.file_not_found
+  end
 
   case response
   when :file_not_found
