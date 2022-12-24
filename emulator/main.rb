@@ -28,7 +28,7 @@ end
 # HTTP Response boilerplate
 options '*' do
   response.headers['Access-Control-Allow-Methods'] = 'GET, PUT, POST, DELETE, OPTIONS'
-  response.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type, Accept, X-User-Email, X-Auth-Token', 'Access-Control-Allow-Origin'
+  response.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type, Accept, X-User-Email, X-Auth-Token'
 end
 
 # API END-POINTS
@@ -77,8 +77,8 @@ delete '/:user_id' do |user_id|
   case response
   when :user_deletion_success
     Response.generic('201', 'User directory removed successfully!')
-  when :user_missing
-    Reponse.generic('404', 'User directory not found.')
+  else
+    Response.generic('404', 'User directory not found.')
   end
 end
 
