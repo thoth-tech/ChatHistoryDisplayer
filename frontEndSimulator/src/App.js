@@ -73,6 +73,7 @@ function App() {
       setJsonResponse(response.data)
       setResponse(JSON.stringify(response.data));
       setDiff(response.data["Code"] === "201" ? response.data["Message"].match(/(^-\w+.*)|(^\+\w+.*)|(^ \w+.*)/gm).join("\n") : diff);
+      setJsonResponse({"Code": 201, "Message": "Done."})
       setSnackOpen(true);
     }).catch((response) => {
       // API automatically handle invalid URL and comeback with a structured respponse
