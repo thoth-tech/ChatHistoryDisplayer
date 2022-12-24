@@ -6,3 +6,4 @@ DS_STORE
 # ignore everything inside the users dir except the .keep file
 emulator/users
 !emulator/users/.keep
+.DS_Store

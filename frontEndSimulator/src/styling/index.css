@@ -2,3 +2,7 @@
   margin: auto;
   text-align: center;
 }
+
+.fullwidth {
+  width: 100%;
+}

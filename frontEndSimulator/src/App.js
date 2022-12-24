@@ -1,7 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, Table, TableCell, TableRow, TableBody, Paper } from "@mui/material";
 import "./styling/index.css";
+
 function App() {
   // State variables
   const [fileName, setFileName] = useState("");
@@ -10,6 +11,7 @@ function App() {
   const [pid, setPID] = useState("");
   const [fileContents, setFileContents] = useState("");
   const [diff, setDiff] = useState("The `git diff` of a file with itself will appear here.");
+  const boxWidth = 400;
 
   //Get request handler
   function sendGet(endpoint) {
@@ -49,65 +51,66 @@ function App() {
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
       <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        sx={{
-          lineHeight: 0,
-        }}
+        width={boxWidth * 2 + 10}
       >
-        <Box
-          sx={{
-            lineHeight: 1,
+        <Paper>
+          <Table>
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan={2} style={{ textAlign: 'center' }} >
+                  <h1>Frontend Simulator</h1>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell width='25%'><h3>User ID</h3></TableCell>
+                <TableCell >{uid}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell width='25%'> <h3>Project Name </h3></TableCell>
+                <TableCell >{pid}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell width='25%'> <h3>File Name</h3></TableCell>
+                <TableCell>{fileName}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </Paper>
+      </Box>
+
+      <Box display="flex" width={boxWidth * 2 + 10} paddingTop={2}>
+        <TextField
+          label="User ID"
+          inputProps={{ maxLength: 64 }}
+          style={{ margin: '0px 8px 0px 0px' }}
+          className="fullwidth"
+          onChange={(event) => {
+            setUID(event.target.value);
           }}
-        >
-          <h1>Front-end</h1>
-        </Box>
+        />
 
-        <Box>
-          <p>User ID is set to: {uid}</p>
-        </Box>
+        <TextField
+          label="Project Name"
+          inputProps={{ maxLength: 64 }}
+          style={{ margin: '0px 8px 0px 0px' }}
+          className="fullwidth"
+          onChange={(event) => {
+            setPID(event.target.value);
+          }}
+        />
 
-        <Box>
-          <p>Project Name is set to: {pid} </p>
-        </Box>
-
-        <Box>
-          <p>File Name is set to: {fileName} </p>
-        </Box>
+        <TextField
+          label="File Name"
+          inputProps={{ maxLength: 64 }}
+          className="fullwidth"
+          onChange={(event) => {
+            setFileName(event.target.value);
+          }}
+        />
       </Box>
 
-      <Box display="flex">
-        <Box p={3}>
-          <TextField
-            label="User ID"
-            onChange={(event) => {
-              setUID(event.target.value);
-            }}
-          />
-        </Box>
-
-        <Box p={3}>
-          <TextField
-            label="Project Name"
-            onChange={(event) => {
-              setPID(event.target.value);
-            }}
-          />
-        </Box>
-
-        <Box p={3}>
-          <TextField
-            label="File Name"
-            onChange={(event) => {
-              setFileName(event.target.value);
-            }}
-          />
-        </Box>
-      </Box>
-
-      <Box display="flex">
-        <Box width={400}>
+      <Box display="flex" paddingTop={2}>
+        <Box width={boxWidth} paddingRight={1}>
           <TextField
             label="File Contents"
             multiline
@@ -120,7 +123,7 @@ function App() {
           />
         </Box>
 
-        <Box width={400}>
+        <Box width={boxWidth}>
           <TextField
             multiline
             variant="outlined"
@@ -138,16 +141,17 @@ function App() {
       <Box display="flex" alignItems="center">
         <Box
           paddingTop={2}
+          paddingLeft={1}
           paddingRight={1}
           display="flex"
           flexDirection="column"
           alignItems="stretch"
-          width={300}
+          width={boxWidth}
         >
-          <Box paddingBottom={2} fullWidth>
+          <Box paddingBottom={2}>
             <Button
               variant="contained"
-              fullWidth
+              className="fullwidth"
               onClick={() => {
                 sendGet(`init/${uid}`);
               }}
@@ -156,10 +160,10 @@ function App() {
             </Button>
           </Box>
 
-          <Box paddingBottom={2} fullWidth>
+          <Box paddingBottom={2}>
             <Button
               variant="contained"
-              fullWidth
+              className="fullwidth"
               onClick={() => {
                 const payload = `{
                   "fileName" : "${fileName}",
@@ -172,10 +176,10 @@ function App() {
             </Button>
           </Box>
 
-          <Box fullWidth>
+          <Box>
             <Button
               variant="contained"
-              fullWidth
+              className="fullwidth"
               onClick={() => {
                 sendGet(`file_exist/${uid}/${pid}/${fileName}`);
               }}
@@ -187,16 +191,16 @@ function App() {
 
         <Box
           paddingTop={2}
-          paddingLeft={1}
+          paddingRight={1}
           display="flex"
           flexDirection="column"
           alignItems="stretch"
-          width={300}
+          width={boxWidth}
         >
-          <Box paddingBottom={2} fullWidth>
+          <Box paddingBottom={2}>
             <Button
               variant="contained"
-              fullWidth
+              className="fullwidth"
               onClick={() => {
                 sendGet(`init/${uid}/${pid}`);
               }}
@@ -205,10 +209,10 @@ function App() {
             </Button>
           </Box>
 
-          <Box paddingBottom={2} fullWidth>
+          <Box paddingBottom={2}>
             <Button
               variant="contained"
-              fullWidth
+              className="fullwidth"
               onClick={() => {
                 getDiff(`diff/${uid}/${pid}/${fileName}`);
               }}
@@ -217,10 +221,10 @@ function App() {
             </Button>
           </Box>
 
-          <Box fullWidth>
+          <Box>
             <Button
               variant="contained"
-              fullWidth
+              className="fullwidth"
               onClick={() => {
                 sendGet(`required_files/${uid}/${pid}`);
               }}
@@ -231,45 +235,42 @@ function App() {
         </Box>
       </Box>
 
-      <Box paddingTop={2} display="flex" alignItems="center">
-        <Box paddingRight={2} fullWidth>
-          <Button
-            variant="contained"
-            color="error"
-            fullWidth
-            onClick={() => {
-              deletePost(`${uid}`);
-            }}
-          >
-            DELETE USER
-          </Button>
-        </Box>
+      <Box paddingTop={2} display="flex" alignItems="center" width={boxWidth * 2 + 10}>
 
-        <Box paddingRight={2} fullWidth>
-          <Button
-            variant="contained"
-            color="error"
-            fullWidth
-            onClick={() => {
-              deletePost(`${uid}/${pid}`);
-            }}
-          >
-            DELETE Project
-          </Button>
-        </Box>
+        <Button
+          variant="contained"
+          color="error"
+          style={{ margin: '0px 8px 0px 0px' }}
+          className="fullwidth"
+          onClick={() => {
+            deletePost(`${uid}`);
+          }}
+        >
+          DELETE USER
+        </Button>
 
-        <Box fullWidth>
-          <Button
-            variant="contained"
-            color="error"
-            fullWidth
-            onClick={() => {
-              deletePost(`${uid}/${pid}/${fileName}`);
-            }}
-          >
-            DELETE Project file
-          </Button>
-        </Box>
+        <Button
+          variant="contained"
+          color="error"
+          style={{ margin: '0px 8px 0px 0px' }}
+          className="fullwidth"
+          onClick={() => {
+            deletePost(`${uid}/${pid}`);
+          }}
+        >
+          DELETE Project
+        </Button>
+
+        <Button
+          variant="contained"
+          color="error"
+          className="fullwidth"
+          onClick={() => {
+            deletePost(`${uid}/${pid}/${fileName}`);
+          }}
+        >
+          DELETE Project file
+        </Button>
       </Box>
 
       <Box
@@ -277,12 +278,19 @@ function App() {
         display="flex"
         flexDirection="column"
         alignItems="center"
-        sx={{
-          lineHeight: 0,
-        }}
       >
-        <h2>Raw JSON</h2>
-        <p>{response}</p>
+        <Paper>
+          <Table>
+            <TableBody>
+              <TableRow>
+                <TableCell style={{ textAlign: 'center' }} width={100}>
+                  <h3>Raw JSON</h3>
+                </TableCell>
+                <TableCell style={{ textAlign: 'center' }}>{response === "" ? 'NULL' : response}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </Paper>
       </Box>
     </Box>
   );
