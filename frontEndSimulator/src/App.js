@@ -17,17 +17,20 @@ function App() {
   function sendGet(endpoint) {
     const url = `http://localhost:4567/${endpoint}`;
     axios.get(url).then((response) => {
-      console.log(response.data);
       setResponse(JSON.stringify(response.data));
+    }).catch((response) => {
+      setResponse(JSON.stringify(response));
     });
+
   }
 
   //Post request handler
   function sendPost(endpoint, body) {
     const url = `http://localhost:4567/${endpoint}`;
     axios.post(url, body).then((response) => {
-      console.log(response.data);
       setResponse(JSON.stringify(response.data));
+    }).catch((response) => {
+      setResponse(JSON.stringify(response));
     });
   }
 
@@ -35,8 +38,9 @@ function App() {
   function deletePost(endpoint, body) {
     const url = `http://localhost:4567/${endpoint}`;
     axios.delete(url, body).then((response) => {
-      console.log(response.data);
       setResponse(JSON.stringify(response.data));
+    }).catch((response) => {
+      setResponse(JSON.stringify(response));
     });
   }
 
@@ -45,6 +49,11 @@ function App() {
     axios.get(url).then((response) => {
       setResponse(JSON.stringify(response.data));
       setDiff(response.data["Code"] === "201" ? response.data["Message"].match(/(^-\w+.*)|(^\+\w+.*)|(^ \w+.*)/gm).join("\n") : diff);
+    }).catch((response) => {
+      // API automatically handle invalid URL and comeback with a structured respponse
+      // We should handle to let user know there are an error accure.
+      // Should have a snackbar error, simulating OnTrack behavior
+      setResponse(JSON.stringify(response));
     });
   }
 
