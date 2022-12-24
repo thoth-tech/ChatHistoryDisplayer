@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { Box, Button, TextField, Table, TableCell, TableRow, TableBody, Paper, Snackbar, IconButton } from "@mui/material";
+import { Box, Button, TextField, Table, TableCell, TableRow, TableBody, Paper, Snackbar, IconButton, Link } from "@mui/material";
 import { Close as CloseIcon } from '@mui/icons-material';
 import "./styling/index.css";
 import React from 'react';
@@ -349,6 +349,8 @@ function App() {
             </TableBody>
           </Table>
         </Paper>
+
+        <Link href="https://github.com/thoth-tech/ChatHistoryDisplayer" target="_blank" rel="noopener noreferrer" variant="body1" fontSize={16} marginTop={2}>Project Repository</Link>
       </Box>
     </Box>
   );
