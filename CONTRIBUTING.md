@@ -25,6 +25,8 @@
 
 - [Attaching Bash Terminal](#attaching-bash-terminal)
 
+- [Running API Tests](#running-api-tests)
+
 - [Creating a Pull Request](#creating-a-pull-request)
 
 ## Prerequisites
@@ -153,6 +155,15 @@ This is most useful for attaching a bash terminal to the `chathistorydisplayer-a
   ```bash
   docker exec -it chathistorydisplayer-web-1 /bin/bash
   ```
+
+## Running API Tests
+----
+
+With the [bash terminal attached](#attaching-bash-terminal) to the API, you can execute the tests on the API end-points with the following command:
+
+```bash
+rspec spec/api-specs/
+```
 
 ## Creating a Pull Request
 ----
