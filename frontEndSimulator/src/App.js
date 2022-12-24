@@ -44,7 +44,7 @@ function App() {
     const url = `http://localhost:4567/${endpoint}`;
     axios.get(url).then((response) => {
       setResponse(JSON.stringify(response.data));
-      setDiff(response.data["Message"].match(/(^-\w+.*)|(^\+\w+.*)|(^ \w+.*)/gm).join("\n"));
+      setDiff(response.data["Code"] === "201" ? response.data["Message"].match(/(^-\w+.*)|(^\+\w+.*)|(^ \w+.*)/gm).join("\n") : diff);
     });
   }
 

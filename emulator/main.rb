@@ -106,13 +106,13 @@ delete '/:user_id/:project_name/:file_name' do |user_id, project_name, file_name
   end
 end
 
+#### [TODO] Need to create test case in spec/api_spec
 # gets the diff string from the diff file
 get '/diff/:user_id/:project_name/:file_name' do |user_id, project_name, file_name|
-  
   if GitGenerator.file_exist?(user_id, project_name, file_name)
     response = GitGenerator.get_diff_string_from_file(user_id, project_name, file_name)
   else
-    response = GitGenerator.file_not_found
+    response = :file_not_found
   end
 
   case response
@@ -123,6 +123,7 @@ get '/diff/:user_id/:project_name/:file_name' do |user_id, project_name, file_na
   end
 end
 
+#### [TODO] Need to create test case in spec/api_spec
 # get whether a file exists in a user's project dir
 get '/file_exist/:user_id/:project_name/:file_name' do |user_id, project_name, file_name|
   response = GitGenerator.file_exist?(user_id, project_name, file_name)
@@ -135,6 +136,7 @@ get '/file_exist/:user_id/:project_name/:file_name' do |user_id, project_name, f
   end
 end
 
+#### [TODO] Need to create test case in spec/api_spec
 # get the status of a user's project (are all required files present?)
 get '/required_files/:user_id/:project_name' do |user_id, project_name|
   response = GitGenerator.required_files_exist?(user_id, project_name)
