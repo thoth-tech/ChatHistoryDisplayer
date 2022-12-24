@@ -39,9 +39,9 @@ The [thoth-tech/ChatHistoryDisplayer](https://github.com/thoth-tech/ChatHistoryD
 
 2. Clone your fork of the repository. Replace `YOUR_GITHUB_USERNAME` in the following bash command with your GitHub username.
 
-  ```bash
-  git clone https://github.com/YOUR_GITHUB_USERNAME/ChatHistoryDisplayer.git
-  ```
+    ```bash
+    git clone https://github.com/YOUR_GITHUB_USERNAME/ChatHistoryDisplayer.git
+    ```
 
 3. Navigate into the `ChatHistoryDisplayer` directory with `cd ChatHistoryDisplayer`.
 
@@ -99,7 +99,8 @@ It is advised that all branches begin with a prefix followed by a name that expl
 Ensure your git global text editor is one you are comfortable with. After that, commits should omit the `-m` flag so that it opens up your favourite text editor. That is, instead of `git commit -m "A_MESSAGE`, you are advised to do `git commit` and use the text editor.
 
 Commits must take the form:
-```
+
+```text
 prefix: SHORT MESSAGE
 
 LONGER MESSAGE
@@ -134,7 +135,7 @@ In the `chathistorydisplayer` directory, execute
 docker compose up
 ```
 
-After it is done setting up, `chathistorydisplayer-web` will be accessible from http://localhost:3000/.
+After it is done setting up, `chathistorydisplayer-web` will be accessible from [http://localhost:3000/](http://localhost:3000/).
 
 ## Attaching Bash Terminal
 
