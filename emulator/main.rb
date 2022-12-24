@@ -28,7 +28,7 @@ end
 # HTTP Response boilerplate
 options '*' do
   response.headers['Access-Control-Allow-Methods'] = 'GET, PUT, POST, DELETE, OPTIONS'
-  response.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type, Accept, X-User-Email, X-Auth-Token'
+  response.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type, Accept, X-User-Email, X-Auth-Token', 'Access-Control-Allow-Origin'
 end
 
 # API END-POINTS
