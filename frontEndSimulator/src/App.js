@@ -70,6 +70,7 @@ function App() {
   function getDiff(endpoint) {
     const url = `http://localhost:4567/${endpoint}`;
     axios.get(url).then((response) => {
+      setJsonResponse(response.data)
       setResponse(JSON.stringify(response.data));
       setDiff(response.data["Code"] === "201" ? response.data["Message"].match(/(^-\w+.*)|(^\+\w+.*)|(^ \w+.*)/gm).join("\n") : diff);
       setSnackOpen(true);
@@ -78,7 +79,7 @@ function App() {
       // We should handle to let user know there are an error accure.
       // Should have a snackbar error, simulating OnTrack behavior
 
-      setResponse(JSON.stringify(response.data));
+      setJsonResponse(response)
       setResponse(JSON.stringify(response));
       setSnackOpen(true);
     });
@@ -89,7 +90,7 @@ function App() {
       <Snackbar
         open={snackOpen}
         onClose={handleSnackClose}
-        message={jsonResponse["Message"] ? jsonResponse["Message"] : jsonResponse["message"]}
+        message={jsonResponse["Message"] ? String(jsonResponse["Message"]) :jsonResponse["message"]}
         autoHideDuration={3000}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         action={
