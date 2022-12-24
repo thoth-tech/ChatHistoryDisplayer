@@ -161,7 +161,7 @@ This is most useful for attaching a bash terminal to the `chathistorydisplayer-a
 With the [bash terminal attached](#attaching-bash-terminal) to the API, you can execute the tests on the API end-points with the following command:
 
 ```bash
-rspec spec/api-specs/
+rspec spec/api_specs/
 ```
 
 ## Creating a Pull Request
