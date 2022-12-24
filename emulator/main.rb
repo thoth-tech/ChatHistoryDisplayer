@@ -136,7 +136,7 @@ get '/required_files/:user_id/:project_name' do |user_id, project_name|
 
   case response
   when :required_files_found
-    Response.generic('404', true)
+    Response.generic('201', true)
   when :required_files_not_found
     Response.generic('404', false)
   end
