@@ -72,8 +72,12 @@ function App() {
     axios.get(url).then((response) => {
       setJsonResponse(response.data)
       setResponse(JSON.stringify(response.data));
-      setDiff(response.data["Code"] === "201" ? response.data["Message"].match(/(^-\w+.*)|(^\+\w+.*)|(^ \w+.*)/gm).join("\n") : diff);
-      setJsonResponse({"Code": 201, "Message": "Done."})
+      if (response.data["Code"] === "201"){
+        setDiff(response.data["Message"].match(/(^-\w+.*)|(^\+\w+.*)|(^ \w+.*)/gm).join("\n"));
+        setJsonResponse({ "Code": 201, "Message": response.data["Message"].match(/(^-\w+.*)|(^\+\w+.*)|(^ \w+.*)/gm).join("\n") })
+      }else{
+        setDiff(diff);
+      }
       setSnackOpen(true);
     }).catch((response) => {
       // API automatically handle invalid URL and comeback with a structured respponse
@@ -90,8 +94,9 @@ function App() {
     <Box display="flex" flexDirection="column" alignItems="center">
       <Snackbar
         open={snackOpen}
+        style={{ whiteSpace: 'pre-wrap' }}
         onClose={handleSnackClose}
-        message={jsonResponse["Message"] ? String(jsonResponse["Message"]) :jsonResponse["message"]}
+        message={jsonResponse["Message"] ? jsonResponse["Message"] : jsonResponse["message"]}
         autoHideDuration={3000}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         action={
