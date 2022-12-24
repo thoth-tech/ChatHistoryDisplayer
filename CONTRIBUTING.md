@@ -1,35 +1,27 @@
 # CONTRIBUTING.md
 
 ## Contents
+
 ----
 
-- [Prerequisites](#prerequisites)
-
-- [Getting Development Ready](#getting-development-ready)
-
-- [Branching Strategy](#branching-strategy)
-
-  - [Setting Up a Branch](#setting-up-a-branch)
-
-  - [Branch Naming Scheme](#branch-naming-scheme)
-
-- [Commit Strategy](#commit-strategy)
-
-  - [Form of a Commit](#form-of-a-commit)
-
-  - [Present Tense and Imperative Mood](#present-tense-and-imperative-mood)
-
-  - [Prefixes](#prefixes)
-
-- [Running Development Instance](#running-development-instance)
-
-- [Attaching Bash Terminal](#attaching-bash-terminal)
-
-- [Running API Tests](#running-api-tests)
-
-- [Creating a Pull Request](#creating-a-pull-request)
+- [CONTRIBUTING.md](#contributingmd)
+  - [Contents](#contents)
+  - [Prerequisites](#prerequisites)
+  - [Getting Development Ready](#getting-development-ready)
+  - [Branching Strategy](#branching-strategy)
+    - [Setting Up a Branch](#setting-up-a-branch)
+    - [Branch Naming Scheme](#branch-naming-scheme)
+  - [Commit Strategy](#commit-strategy)
+    - [Form of a Commit](#form-of-a-commit)
+    - [Present Tense and Imperative Mood](#present-tense-and-imperative-mood)
+    - [Prefixes](#prefixes)
+  - [Running Development Instance](#running-development-instance)
+  - [Attaching Bash Terminal](#attaching-bash-terminal)
+  - [Running API Tests](#running-api-tests)
+  - [Creating a Pull Request](#creating-a-pull-request)
 
 ## Prerequisites
+
 ----
 
 - A terminal capable of executing `sh` scripts (if you are on Windows, then WSL2, MSYS2, or
@@ -38,6 +30,7 @@
 - Configure git.
 
 ## Getting Development Ready
+
 ----
 
 The [thoth-tech/ChatHistoryDisplayer](https://github.com/thoth-tech/ChatHistoryDisplayer) uses a [forking workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/forking-workflow).
@@ -61,6 +54,7 @@ The [thoth-tech/ChatHistoryDisplayer](https://github.com/thoth-tech/ChatHistoryD
 You can now pull changes from the main branch of [thoth-tech/ChatHistoryDisplayer](https://github.com/thoth-tech/ChatHistoryDisplayer) with `git pull upstream`.
 
 ## Branching Strategy
+
 ----
 
 ### Setting Up a Branch
@@ -97,6 +91,7 @@ It is advised that all branches begin with a prefix followed by a name that expl
 |`fix`    | `fix/rack-config` | Use when fixing something, such as a bug. |
 
 ## Commit Strategy
+
 ----
 
 ### Form of a Commit
@@ -130,9 +125,11 @@ Example:
 | fix | Use when fixing something | `fix: user dir not deleting` |
 
 ## Running Development Instance
+
 ----
 
 In the `chathistorydisplayer` directory, execute
+
 ```bash
 docker compose up
 ```
@@ -140,6 +137,7 @@ docker compose up
 After it is done setting up, `chathistorydisplayer-web` will be accessible from http://localhost:3000/.
 
 ## Attaching Bash Terminal
+
 ----
 
 This is most useful for attaching a bash terminal to the `chathistorydisplayer-api`, as you can use executable Ruby gems with the terminal attached to the container. For example, when the terminal is attached to the running container for the `chathistorydisplayer-api`, you can execute `bundle exec rubocop` to execute the static text analyser and linter `rubocop`.
@@ -157,6 +155,7 @@ This is most useful for attaching a bash terminal to the `chathistorydisplayer-a
   ```
 
 ## Running API Tests
+
 ----
 
 With the [bash terminal attached](#attaching-bash-terminal) to the API, you can execute the tests on the API end-points with the following command:
@@ -166,6 +165,7 @@ rspec spec/api-specs/
 ```
 
 ## Creating a Pull Request
+
 ----
 
 - Visit [thoth-tech/ChatHistoryDisplayer](https://github.com/thoth-tech/ChatHistoryDisplayer).
