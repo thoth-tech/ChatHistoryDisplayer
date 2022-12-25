@@ -40,7 +40,7 @@ get '/init/:user_id' do |user_id|
   when :user_creation_success
     Response.generic('201', 'User directory created successfully!')
   when :user_directory_exist
-    Response.generic('401', 'User directory already exists.')
+    Response.generic('404', 'User directory already exists.')
   end
 end
 
@@ -50,9 +50,9 @@ get '/init/:user_id/:project_id' do |user_id, project_id|
 
   case response
   when :project_creation_success
-    Response.generic('200', 'Project directory created successfully!')
+    Response.generic('201', 'Project directory created successfully!')
   when :project_directory_exist
-    Response.generic('401', 'Project directory already exists')
+    Response.generic('404', 'Project directory already exists')
   end
 end
 
@@ -64,9 +64,9 @@ post '/:user_id/:project_name' do |user_id, project_name|
 
   case response
   when :file_creation_success
-    Response.generic('200', 'File created.')
+    Response.generic('201', 'File created.')
   when :project_directory_missing
-    Response.generic('401', 'Project directory missing.')
+    Response.generic('404', 'Project directory missing.')
   end
 end
 
@@ -77,8 +77,8 @@ delete '/:user_id' do |user_id|
   case response
   when :user_deletion_success
     Response.generic('201', 'User directory removed successfully!')
-  when :user_missing
-    Reponse.generic('401', 'User directory not found.')
+  else
+    Response.generic('404', 'User directory not found.')
   end
 end
 
@@ -90,7 +90,7 @@ delete '/:user_id/:project_name' do |user_id, project_name|
   when :project_deletion_success
     Response.generic('201', 'Project directory removed successfully!')
   when :project_missing
-    Response.generic('401', 'Project directory not found.')
+    Response.generic('404', 'Project directory not found.')
   end
 end
 
@@ -102,22 +102,28 @@ delete '/:user_id/:project_name/:file_name' do |user_id, project_name, file_name
   when :file_deletion_success
     Response.generic('201', 'File removed successfully!')
   when :file_missing
-    Response.generic('401', 'File not found.')
+    Response.generic('404', 'File not found.')
   end
 end
 
+#### [TODO] Need to create test case in spec/api_spec
 # gets the diff string from the diff file
 get '/diff/:user_id/:project_name/:file_name' do |user_id, project_name, file_name|
-  response = GitGenerator.get_diff_string_from_file(user_id, project_name, file_name)
+  if GitGenerator.file_exist?(user_id, project_name, file_name)
+    response = GitGenerator.get_diff_string_from_file(user_id, project_name, file_name)
+  else
+    response = :file_not_found
+  end
 
   case response
   when :file_not_found
-    Response.generic('401', 'File not found.')
+    Response.generic('404', 'File not found.')
   else
     Response.generic('201', response)
   end
 end
 
+#### [TODO] Need to create test case in spec/api_spec
 # get whether a file exists in a user's project dir
 get '/file_exist/:user_id/:project_name/:file_name' do |user_id, project_name, file_name|
   response = GitGenerator.file_exist?(user_id, project_name, file_name)
@@ -126,18 +132,19 @@ get '/file_exist/:user_id/:project_name/:file_name' do |user_id, project_name, f
   when true
     Response.generic('201', 'File found.')
   else
-    Response.generic('401', 'File not found.')
+    Response.generic('404', 'File not found.')
   end
 end
 
+#### [TODO] Need to create test case in spec/api_spec
 # get the status of a user's project (are all required files present?)
 get '/required_files/:user_id/:project_name' do |user_id, project_name|
   response = GitGenerator.required_files_exist?(user_id, project_name)
 
   case response
   when :required_files_found
-    Response.generic('404', true)
+    Response.generic('201', 'File found.')
   when :required_files_not_found
-    Response.generic('404', false)
+    Response.generic('404', 'File not found.')
   end
 end

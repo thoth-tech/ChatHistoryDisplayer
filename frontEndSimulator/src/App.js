@@ -1,7 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
-import { Box, Button, TextField, Table, TableCell, TableRow, TableBody, Paper } from "@mui/material";
+import { Box, Button, TextField, Table, TableCell, TableRow, TableBody, Paper, Snackbar, IconButton, Link } from "@mui/material";
+import { Close as CloseIcon } from '@mui/icons-material';
 import "./styling/index.css";
+import React from 'react';
 
 function App() {
   // State variables
@@ -11,23 +13,43 @@ function App() {
   const [pid, setPID] = useState("");
   const [fileContents, setFileContents] = useState("");
   const [diff, setDiff] = useState("The `git diff` of a file with itself will appear here.");
+  const [snackOpen, setSnackOpen] = React.useState(false);
+  const [jsonResponse, setJsonResponse] = React.useState({});
   const boxWidth = 400;
+
+  const handleSnackClose = (event, reason) => {
+    if (reason === 'clickaway') 
+      return;
+
+    setSnackOpen(false);
+  };
 
   //Get request handler
   function sendGet(endpoint) {
     const url = `http://localhost:4567/${endpoint}`;
     axios.get(url).then((response) => {
-      console.log(response.data);
+      setJsonResponse(response.data)
       setResponse(JSON.stringify(response.data));
+      setSnackOpen(true);
+    }).catch((response) => {
+      setJsonResponse(response)
+      setResponse(JSON.stringify(response));
+      setSnackOpen(true);
     });
+
   }
 
   //Post request handler
   function sendPost(endpoint, body) {
     const url = `http://localhost:4567/${endpoint}`;
     axios.post(url, body).then((response) => {
-      console.log(response.data);
+      setJsonResponse(response.data)
       setResponse(JSON.stringify(response.data));
+      setSnackOpen(true);
+    }).catch((response) => {
+      setJsonResponse(response)
+      setResponse(JSON.stringify(response));
+      setSnackOpen(true);
     });
   }
 
@@ -35,21 +57,57 @@ function App() {
   function deletePost(endpoint, body) {
     const url = `http://localhost:4567/${endpoint}`;
     axios.delete(url, body).then((response) => {
-      console.log(response.data);
+      setJsonResponse(response.data)
       setResponse(JSON.stringify(response.data));
+      setSnackOpen(true);
+    }).catch((response) => {
+      setJsonResponse(response)
+      setResponse(JSON.stringify(response));
+      setSnackOpen(true);
     });
   }
 
   function getDiff(endpoint) {
     const url = `http://localhost:4567/${endpoint}`;
     axios.get(url).then((response) => {
+      setJsonResponse(response.data)
       setResponse(JSON.stringify(response.data));
-      setDiff(response.data["Message"].match(/(^-\w+.*)|(^\+\w+.*)|(^ \w+.*)/gm).join("\n"));
+      if (response.data["Code"] === "201"){
+        setDiff(response.data["Message"].match(/(^-\w+.*)|(^\+\w+.*)|(^ \w+.*)/gm).join("\n"));
+        setJsonResponse({ "Code": 201, "Message": response.data["Message"].match(/(^-\w+.*)|(^\+\w+.*)|(^ \w+.*)/gm).join("\n") })
+      }else{
+        setDiff(diff);
+      }
+      setSnackOpen(true);
+    }).catch((response) => {
+      // API automatically handle invalid URL and comeback with a structured respponse
+      // We should handle to let user know there are an error accure.
+      // Should have a snackbar error, simulating OnTrack behavior
+
+      setJsonResponse(response)
+      setResponse(JSON.stringify(response));
+      setSnackOpen(true);
     });
   }
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
+      <Snackbar
+        open={snackOpen}
+        style={{ whiteSpace: 'pre-wrap' }}
+        onClose={handleSnackClose}
+        message={jsonResponse["Message"] ? jsonResponse["Message"] : jsonResponse["message"]}
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        action={
+          <React.Fragment>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleSnackClose}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
+
       <Box
         width={boxWidth * 2 + 10}
       >
@@ -291,6 +349,8 @@ function App() {
             </TableBody>
           </Table>
         </Paper>
+
+        <Link href="https://github.com/thoth-tech/ChatHistoryDisplayer" target="_blank" rel="noopener noreferrer" variant="body1" fontSize={16} marginTop={2}>Project Repository</Link>
       </Box>
     </Box>
   );
